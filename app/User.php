@@ -34,4 +34,13 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Relación 1:1 entre User y Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function account() {
+        return $this->hasOne('App\Account');
+    }
 }

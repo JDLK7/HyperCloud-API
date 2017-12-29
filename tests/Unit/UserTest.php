@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\User;
+use App\Account;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -22,5 +23,13 @@ class UserTest extends TestCase
         $user2 = factory(User::class)->create();
         
         $this->assertNotEquals($user1->id, $user2->id);
+    }
+
+    public function test_user_is_attached_to_account() {
+        $account = factory(Account::class)->create();
+
+        $this->assertNotNull($account->id);
+        $this->assertNotNull($account->user);
+        $this->assertEquals($account->user_id, $account->user->id);
     }
 }
