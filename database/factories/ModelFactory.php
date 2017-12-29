@@ -46,7 +46,6 @@ $factory->define(App\Folder::class, function (Faker\Generator $faker) {
     $path = "files/test/$name/";
 
     @mkdir(base_path('files/test/'));
-    mkdir(base_path($path), 755);
 
     return [
         'name' => $name,

@@ -19,17 +19,14 @@ class FolderTest extends TestCase
         rmdir('files/test/');
     }
 
-    public function test_archive_factory_real_archive() {
-        $folder = factory(Folder::class)->make();
+    public function test_folder_factory_real_folder() {
+        $folder = factory(Folder::class)->create();
 
         $this->assertNotNull($folder);
         $this->assertTrue(file_exists(base_path($folder->path)));
-        $this->assertDatabaseMissing('files', [
-            'path' => $folder->path
-        ]);
     }
 
-    public function test_archive_factory_database_archive() {
+    public function test_folder_factory_database_folder() {
         $folder = factory(Folder::class)->create();
 
         $this->assertDatabaseHas('files', [
