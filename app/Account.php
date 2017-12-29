@@ -3,11 +3,12 @@
 namespace App;
 
 use App\Traits\Uuids;
+use App\Traits\CreatesFolder;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    use Uuids;
+    use Uuids, CreatesFolder;
     
     /**
      * Indicates if the IDs are auto-incrementing.

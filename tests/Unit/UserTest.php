@@ -25,11 +25,21 @@ class UserTest extends TestCase
         $this->assertNotEquals($user1->id, $user2->id);
     }
 
+    public function test_it_creates_user_folder_on_account_creation() {
+        $account = factory(Account::class)->create();
+
+        $this->assertTrue(file_exists(base_path($account->path)));
+
+        rmdir($account->path);
+    }
+
     public function test_user_is_attached_to_account() {
         $account = factory(Account::class)->create();
 
         $this->assertNotNull($account->id);
         $this->assertNotNull($account->user);
         $this->assertEquals($account->user_id, $account->user->id);
+
+        rmdir($account->path);
     }
 }
