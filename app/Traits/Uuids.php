@@ -7,12 +7,12 @@ use Webpatser\Uuid\Uuid;
 trait Uuids
 {
     /**
-     * Boot function from laravel.
+     * Se registra el hook con la generación del UUID en el método boot 
+     * del Trait, que se ejecutará como si fuera la función boot
+     * de un Model.
      */
-    protected static function boot()
+    protected static function bootUuids()
     {
-        parent::boot();
-
         static::creating(function ($model) {
             $model->{ $model->getKeyName() } = Uuid::generate()->string;
         });
