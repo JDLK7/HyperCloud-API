@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\User;
+use App\Folder;
+use App\Archive;
 use App\Account;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -41,5 +43,51 @@ class UserTest extends TestCase
         $this->assertEquals($account->user_id, $account->user->id);
 
         rmdir($account->path);
+    }
+
+    public function test_user_account_has_folders() {
+        $account = factory(Account::class)->create();
+        $folder = factory(Folder::class)->create();
+
+        $folder->account()->associate($account);
+        $folder->save();
+
+        $this->assertTrue($account->folders->contains($folder));
+        $this->assertTrue($account->files()->contains($folder));
+    }
+
+    public function test_user_account_has_archives() {
+        $account = factory(Account::class)->create();
+        $archive = factory(Archive::class)->create();
+
+        $archive->account()->associate($account);
+        $archive->save();
+
+        $this->assertTrue($account->archives->contains($archive));
+        $this->assertTrue($account->files()->contains($archive));
+    }
+
+    public function test_it_returns_only_associated_folders() {
+        $account = factory(Account::class)->create();
+        $folder = factory(Folder::class)->create();
+        $notAssociatedFolder = factory(Folder::class)->create();
+
+        $folder->account()->associate($account);
+        $folder->save();
+
+        $this->assertFalse($account->folders->contains($notAssociatedFolder));        
+        $this->assertFalse($account->files()->contains($notAssociatedFolder));        
+    }
+
+    public function test_it_returns_only_associated_archives() {
+        $account = factory(Account::class)->create();
+        $archive = factory(Archive::class)->create();
+        $notAssociatedArchive = factory(Archive::class)->create();
+
+        $archive->account()->associate($account);
+        $archive->save();
+
+        $this->assertFalse($account->archives->contains($notAssociatedArchive));        
+        $this->assertFalse($account->files()->contains($notAssociatedArchive));        
     }
 }

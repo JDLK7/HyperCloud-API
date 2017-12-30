@@ -37,4 +37,14 @@ abstract class File extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * Relación 1:N entre Account y File. Devuelve la cuenta a la 
+     * que pertenece un fichero (archivo o carpeta).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function account(){
+        return $this->belongsTo('App\Account');
+    }
 }
