@@ -10,12 +10,18 @@ class DatabaseSeeder extends Seeder
      * @return void
      */
     public function run()
-    {        
-        factory(App\Account::class, 10)
-            ->create()
-            ->each(function ($account) {
-                $account->archives()
-                    ->save(factory(App\Archive::class)->create());
-            });
+    {
+        $suscriptions = factory(App\Suscription::class, 3)->create();
+
+        foreach($suscriptions as $sus) {
+            factory(App\Account::class, 10)
+                ->create([
+                    'suscription_id' => $sus->id
+                ])
+                ->each(function ($account) {
+                    $account->archives()
+                        ->save(factory(App\Archive::class)->create());
+                });   
+        }
     }
 }

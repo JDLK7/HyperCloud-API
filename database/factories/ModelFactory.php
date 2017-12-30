@@ -78,3 +78,13 @@ $factory->define(App\Archive::class, function (Faker\Generator $faker) {
         'group_id' => null,
     ];
 });
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Suscription::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->word,
+        'spaceOffer' => $faker->numberBetween(0, 1000),
+        'price' => $faker->numberBetween(3, 25),
+        'description' => $faker->sentence,
+    ];
+});
