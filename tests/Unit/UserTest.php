@@ -14,6 +14,13 @@ class UserTest extends TestCase
 {
     use DatabaseTransactions;
 
+    /**
+     * @after
+     */
+    public function tearDownFixtures() {
+        @rmdir('files/test/');
+    }
+
     public function test_uuid_generated_on_creation() {
         $user = factory(User::class)->create();
 
@@ -54,6 +61,8 @@ class UserTest extends TestCase
 
         $this->assertTrue($account->folders->contains($folder));
         $this->assertTrue($account->files()->contains($folder));
+
+        rmdir($folder->path);
     }
 
     public function test_user_account_has_archives() {
@@ -65,6 +74,8 @@ class UserTest extends TestCase
 
         $this->assertTrue($account->archives->contains($archive));
         $this->assertTrue($account->files()->contains($archive));
+
+        unlink($archive->path);
     }
 
     public function test_it_returns_only_associated_folders() {
@@ -76,7 +87,10 @@ class UserTest extends TestCase
         $folder->save();
 
         $this->assertFalse($account->folders->contains($notAssociatedFolder));        
-        $this->assertFalse($account->files()->contains($notAssociatedFolder));        
+        $this->assertFalse($account->files()->contains($notAssociatedFolder));   
+        
+        rmdir($folder->path);
+        rmdir($notAssociatedFolder->path);
     }
 
     public function test_it_returns_only_associated_archives() {
@@ -88,6 +102,9 @@ class UserTest extends TestCase
         $archive->save();
 
         $this->assertFalse($account->archives->contains($notAssociatedArchive));        
-        $this->assertFalse($account->files()->contains($notAssociatedArchive));        
+        $this->assertFalse($account->files()->contains($notAssociatedArchive));
+        
+        unlink($archive->path);
+        unlink($notAssociatedArchive->path);
     }
 }
