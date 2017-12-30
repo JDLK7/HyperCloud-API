@@ -53,4 +53,13 @@ class Account extends Model
     public function folders() {
        return $this->hasMany('App\Folder');
     }
+
+    /**
+     * Relación 1:N entre Suscription y Account.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function suscription() {
+        return $this->belongsTo('App\Suscription');
+    }
 }

@@ -15,4 +15,13 @@ class Suscription extends Model
      * @var bool
      */
     public $incrementing = false;
+
+    /**
+     * Relación 1:N entre Suscription y Account.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accounts(){
+        return $this->hasMany('App\Account');
+    }
 }
