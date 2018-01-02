@@ -62,4 +62,13 @@ class Account extends Model
     public function suscription() {
         return $this->belongsTo('App\Suscription');
     }
+
+    /**
+     * Relación N:M entre Group y Account
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups() {
+        return $this->belongsToMany('App\Group');
+    }
 }
