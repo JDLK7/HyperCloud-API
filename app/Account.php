@@ -18,13 +18,6 @@ class Account extends Model
     public $incrementing = false;
 
     /**
-     * Directorio raíz del usuario.
-     *
-     * @var string
-     */
-    public $path;
-
-    /**
      * Atributos asignables en masa.
      *
      * @var array
@@ -87,20 +80,20 @@ class Account extends Model
     }
 
     /**
-     * Devuelve la ruta del directorio raíz del usuario.
+     * Accessor que devuelve la ruta del directorio raíz del usuario.
      *
      * @return string
      */
-    public function path() {
+    public function getPathAttribute() {
         return "files/users/$this->userName/";
     }
 
     /**
-     * Devuelve la ruta de la imagen de perfil del usuario
+     * Accessor que devuelve la ruta de la imagen de perfil del usuario
      *
      * @return string
      */
-    public function avatarPath() {
+    public function getAvatarPathAttribute() {
         return "";
     }
 }
