@@ -11,6 +11,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        App\Folder::create([
+            'name' => 'users',
+            'size' => 4096,
+            'extension' => null,
+            'path' => 'files/users/',
+            'type'=> 'folder',
+            'account_id' => null,
+            'group_id' => null,
+        ]);
+
+        App\Folder::create([
+            'name' => 'groups',
+            'size' => 4096,
+            'extension' => null,
+            'path' => 'files/groups/',
+            'type'=> 'folder',
+            'account_id' => null,
+            'group_id' => null,
+        ]);
+
         $suscriptions = factory(App\Suscription::class, 3)->create();
 
         foreach($suscriptions as $sus) {
