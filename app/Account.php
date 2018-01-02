@@ -18,6 +18,20 @@ class Account extends Model
     public $incrementing = false;
 
     /**
+     * Directorio raíz del usuario.
+     *
+     * @var string
+     */
+    public $path;
+
+    /**
+     * Atributos asignables en masa.
+     *
+     * @var array
+     */
+    protected $fillable = ['userName'];
+
+    /**
      * Relación 1:1 entre User y Account
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -70,5 +84,23 @@ class Account extends Model
      */
     public function groups() {
         return $this->belongsToMany('App\Group');
+    }
+
+    /**
+     * Devuelve la ruta del directorio raíz del usuario.
+     *
+     * @return string
+     */
+    public function path() {
+        return "files/users/$this->userName/";
+    }
+
+    /**
+     * Devuelve la ruta de la imagen de perfil del usuario
+     *
+     * @return string
+     */
+    public function avatarPath() {
+        return "";
     }
 }
