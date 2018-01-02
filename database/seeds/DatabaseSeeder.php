@@ -46,6 +46,10 @@ class DatabaseSeeder extends Seeder
                 ->create()
                 ->each(function ($group) use (&$accounts) {
                     $group->accounts()->attach($accounts);
+                    $group->archives()
+                        ->save(factory(App\Archive::class)->create());
+                    $group->folders()
+                        ->save(factory(App\Folder::class)->create());
                 });
         }
     }
