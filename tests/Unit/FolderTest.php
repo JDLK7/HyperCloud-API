@@ -11,19 +11,13 @@ class FolderTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @after
-     */
-    public function tearDownFixtures() {
-        array_map('rmdir', glob("files/test/*"));
-        rmdir('files/test/');
-    }
-
     public function test_folder_factory_real_folder() {
         $folder = factory(Folder::class)->create();
 
         $this->assertNotNull($folder);
         $this->assertTrue(file_exists(base_path($folder->path)));
+
+        rmdir(base_path($folder->path));
     }
 
     public function test_folder_factory_database_folder() {
@@ -32,5 +26,7 @@ class FolderTest extends TestCase
         $this->assertDatabaseHas('files', [
             'id' => $folder->id
         ]);
+
+        rmdir(base_path($folder->path));
     }
 }

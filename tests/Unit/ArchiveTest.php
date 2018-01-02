@@ -11,14 +11,6 @@ class ArchiveTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /**
-     * @after
-     */
-    public function tearDownFixtures() {
-        array_map('unlink', glob("files/test/*"));
-        rmdir('files/test/');
-    }
-
     public function test_archive_factory_real_archive() {
         $archive = factory(Archive::class)->make();
 
@@ -27,6 +19,8 @@ class ArchiveTest extends TestCase
         $this->assertDatabaseMissing('files', [
             'path' => $archive->path
         ]);
+
+        unlink($archive->path);
     }
 
     public function test_archive_factory_database_archive() {
@@ -35,5 +29,7 @@ class ArchiveTest extends TestCase
         $this->assertDatabaseHas('files', [
             'id' => $archive->id
         ]);
+
+        unlink($archive->path);
     }
 }
