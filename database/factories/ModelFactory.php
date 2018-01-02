@@ -31,8 +31,6 @@ $factory->define(App\Account::class, function (Faker\Generator $faker) {
     return [
         'userName' => $userName,
         'space' => $faker->numberBetween(0, 10),
-        'path' => "files/users/$userName/",
-        'avatarPath' => "",
         'user_id' => function() {
             return factory(App\User::class)->create()->id;
         }
