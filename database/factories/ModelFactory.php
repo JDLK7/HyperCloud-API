@@ -50,7 +50,7 @@ $factory->define(App\Folder::class, function (Faker\Generator $faker) {
     return [
         'name' => $name,
         'path' => $path,
-        'size' => 0,
+        'size' => 4096,
         'extension' => null,
         'type' => 'folder',
         'account_id' => null,
@@ -71,7 +71,7 @@ $factory->define(App\Archive::class, function (Faker\Generator $faker) {
     return [
         'name' => $name,
         'path' => $path,
-        'size' => 40,
+        'size' => 0,
         'extension' => $extension,
         'type' => 'archive',
         'account_id' => null,
