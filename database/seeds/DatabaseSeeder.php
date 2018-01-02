@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
                 ->each(function ($account) {
                     $account->archives()
                         ->save(factory(App\Archive::class)->create());
+                    $account->folders()
+                        ->save(factory(App\Folder::class)->create());
                 });   
         }
     }
