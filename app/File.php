@@ -44,7 +44,17 @@ abstract class File extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function account(){
+    public function account() {
         return $this->belongsTo('App\Account');
+    }
+
+    /**
+     * Relación 1:N entre Group y File. Devuelve el grupo 
+     * al que pertenece un fichero (archivo o carpeta).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group() {
+        return $this->belongsTo('App\Group');
     }
 }
