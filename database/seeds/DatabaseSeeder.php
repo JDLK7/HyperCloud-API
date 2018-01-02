@@ -14,6 +14,9 @@ class DatabaseSeeder extends Seeder
         $suscriptions = factory(App\Suscription::class, 3)->create();
 
         foreach($suscriptions as $sus) {
+            /**
+             * Cuentas SIN grupo.
+             */
             factory(App\Account::class, 10)
                 ->create([
                     'suscription_id' => $sus->id
@@ -23,7 +26,27 @@ class DatabaseSeeder extends Seeder
                         ->save(factory(App\Archive::class)->create());
                     $account->folders()
                         ->save(factory(App\Folder::class)->create());
-                });   
+                });
+
+            /**
+             * Cuentas CON grupo.
+             */
+            $accounts = factory(App\Account::class, 3)
+                ->create([
+                    'suscription_id' => $sus->id
+                ])
+                ->each(function ($account) {
+                    $account->archives()
+                        ->save(factory(App\Archive::class)->create());
+                    $account->folders()
+                        ->save(factory(App\Folder::class)->create());
+                });
+            
+            factory(App\Group::class)
+                ->create()
+                ->each(function ($group) use (&$accounts) {
+                    $group->accounts()->attach($accounts);
+                });
         }
     }
 }

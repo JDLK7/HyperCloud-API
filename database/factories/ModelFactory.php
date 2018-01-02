@@ -88,3 +88,16 @@ $factory->define(App\Suscription::class, function (Faker\Generator $faker) {
         'description' => $faker->sentence,
     ];
 });
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Group::class, function (Faker\Generator $faker) {
+
+    $name = $faker->word;
+    
+    return [
+        'name' => $name,
+        'description' => $faker->sentence,
+        'path' => "files/groups/$name/",
+        'iconPath' => '',
+    ];
+});
