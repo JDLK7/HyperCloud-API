@@ -59,6 +59,9 @@ class Kernel extends HttpKernel
         'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
         'group.membership' => \App\Http\Middleware\CheckIfUserIsGroupMember::class,
+        'group.ownership' => \App\Http\Middleware\CheckIfGroupOwnsResource::class,
+        'group.many.ownership' => \App\Http\Middleware\CheckIfGroupOwnsManyResources::class,
         'user.ownership' => \App\Http\Middleware\CheckIfUserOwnsResource::class,
+        'user.many.ownership' => \App\Http\Middleware\CheckIfUserOwnsManyResources::class,
     ];
 }

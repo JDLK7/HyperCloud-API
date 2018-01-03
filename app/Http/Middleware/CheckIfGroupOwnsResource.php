@@ -4,11 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckIfUserOwnsResource
+class CheckIfGroupOwnsResource
 {
     /**
-     * Comprueba si el recurso solicitado pertenece
-     * al usuario que lo solicita.
+     * Comprueba que el recurso solicitado pertenezca al grupo.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -16,16 +15,15 @@ class CheckIfUserOwnsResource
      */
     public function handle($request, Closure $next)
     {
-        $user = $request->user();
         $file = $request->folder;
 
-        $fileOwner = $file->account;
-        $fileApplicant = $user->account;
+        $fileOwner = $file->group;
+        $fileApplicant = $request->group;
 
         if($fileOwner != $fileApplicant) {
             return response()->json([
                 'success' => false,
-                'message' => 'El recurso no le pertenece',
+                'message' => 'El recurso no pertenece al grupo',
             ], 403);
         }
 
