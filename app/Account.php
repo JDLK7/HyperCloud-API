@@ -39,8 +39,7 @@ class Account extends Model
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function files() {
-        return $this->folders()->get()
-                    ->merge($this->archives()->get());
+        return $this->hasMany('App\File');
     }
 
     /**

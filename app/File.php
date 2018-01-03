@@ -6,7 +6,7 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
-abstract class File extends Model
+class File extends Model
 {
     use Uuids, SingleTableInheritanceTrait;
 
