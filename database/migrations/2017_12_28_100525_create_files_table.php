@@ -23,8 +23,11 @@ class CreateFilesTable extends Migration
 
             $table->primary('id');
 
+            $table->char('folder_id', 36)->nullable();
             $table->char('account_id', 36)->nullable();
             $table->char('group_id', 36)->nullable();
+            $table->foreign('folder_id')->references('id')
+                ->on('files')->onDelete('cascade');
             $table->foreign('account_id')->references('id')
                 ->on('accounts')->onDelete('cascade');
             $table->foreign('group_id')->references('id')

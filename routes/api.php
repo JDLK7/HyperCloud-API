@@ -25,4 +25,11 @@ Route::group(['middleware' => ['jwt.auth']], function() {
 
     Route::get('logout', 'AuthController@logout');
     
+    Route::get('users/{user}/files', 'FileController@listUserFiles');
+    Route::get('users/{user}/folders/{folder}', 'FileController@listUserFolder')->middleware('user.ownership');
+    
+    Route::group(['middleware' => ['group.membership']], function() {
+        Route::get('groups/{group}/files', 'FileController@listGroupFiles');
+        Route::get('groups/{group}/folders/{folder}', 'FileController@listGroupFolder');
+    });
 });
