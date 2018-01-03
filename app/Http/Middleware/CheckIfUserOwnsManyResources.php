@@ -4,11 +4,12 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckIfUserOwnsResource
+use App\File;
+
+class CheckIfUserOwnsManyResources
 {
     /**
-     * Comprueba si el recurso solicitado pertenece
-     * al usuario que lo solicita.
+     * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -17,15 +18,15 @@ class CheckIfUserOwnsResource
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        $file = $request->folder;
+        $files = $request->get('files');
 
-        $fileOwner = $file->account;
-        $fileApplicant = $user->account;
+        $ownedCount = $user->account->files()->whereIn('id', $files)->count();
+        $requestedCount = count($files);
 
-        if($fileOwner != $fileApplicant) {
+        if($ownedCount != $requestedCount) {
             return response()->json([
                 'success' => false,
-                'message' => 'El recurso no le pertenece',
+                'message' => 'Alguno de los recursos solicitados no le pertenece',
             ], 403);
         }
 

@@ -19,9 +19,9 @@ class CheckIfUserIsGroupMember
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        $groupId = intval($request->get('group'));
+        $group = $request->group;
 
-        $isMember = Group::find($groupId)->accounts()->find($user->account->id) !== null;
+        $isMember = $group->accounts()->find($user->account->id) !== null;
 
         if (!$isMember) {
             return response()->json([
