@@ -60,7 +60,7 @@ class UserTest extends TestCase
         $folder->save();
 
         $this->assertTrue($account->folders->contains($folder));
-        $this->assertTrue($account->files()->contains($folder));
+        $this->assertTrue($account->files->contains($folder));
 
         rmdir($folder->path);
     }
@@ -73,7 +73,7 @@ class UserTest extends TestCase
         $archive->save();
 
         $this->assertTrue($account->archives->contains($archive));
-        $this->assertTrue($account->files()->contains($archive));
+        $this->assertTrue($account->files->contains($archive));
 
         unlink($archive->path);
     }
@@ -87,7 +87,7 @@ class UserTest extends TestCase
         $folder->save();
 
         $this->assertFalse($account->folders->contains($notAssociatedFolder));        
-        $this->assertFalse($account->files()->contains($notAssociatedFolder));   
+        $this->assertFalse($account->files->contains($notAssociatedFolder));   
         
         rmdir($folder->path);
         rmdir($notAssociatedFolder->path);
@@ -102,7 +102,7 @@ class UserTest extends TestCase
         $archive->save();
 
         $this->assertFalse($account->archives->contains($notAssociatedArchive));        
-        $this->assertFalse($account->files()->contains($notAssociatedArchive));
+        $this->assertFalse($account->files->contains($notAssociatedArchive));
         
         unlink($archive->path);
         unlink($notAssociatedArchive->path);
