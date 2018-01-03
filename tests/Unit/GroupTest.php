@@ -28,7 +28,7 @@ class GroupTest extends TestCase
         $folder->save();
 
         $this->assertTrue($group->folders->contains($folder));
-        $this->assertTrue($group->files()->contains($folder));
+        $this->assertTrue($group->files->contains($folder));
 
         rmdir($folder->path);
     }
@@ -41,7 +41,7 @@ class GroupTest extends TestCase
         $archive->save();
 
         $this->assertTrue($group->archives->contains($archive));
-        $this->assertTrue($group->files()->contains($archive));
+        $this->assertTrue($group->files->contains($archive));
 
         unlink($archive->path);
     }
@@ -55,7 +55,7 @@ class GroupTest extends TestCase
         $folder->save();
 
         $this->assertFalse($group->folders->contains($notAssociatedFolder));        
-        $this->assertFalse($group->files()->contains($notAssociatedFolder));   
+        $this->assertFalse($group->files->contains($notAssociatedFolder));   
         
         rmdir($folder->path);
         rmdir($notAssociatedFolder->path);
@@ -70,7 +70,7 @@ class GroupTest extends TestCase
         $archive->save();
 
         $this->assertFalse($group->archives->contains($notAssociatedArchive));        
-        $this->assertFalse($group->files()->contains($notAssociatedArchive));
+        $this->assertFalse($group->files->contains($notAssociatedArchive));
         
         unlink($archive->path);
         unlink($notAssociatedArchive->path);
