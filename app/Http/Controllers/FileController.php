@@ -130,14 +130,23 @@ class FileController extends Controller
         $fileCount = count($files);
 
         if($fileCount === 1) {
-            $filePath = base_path(File::find($files[0])->path);
-            
-            return response()->download($filePath);
+            $file = File::find($files[0]);
+
+            if($file->type !== 'folder') {
+                return response()->download(base_path($file->path));
+            }
         }
 
         $pathArray = File::whereIn('id', $files)->get()->pluck('path');
         $zipPath = $this->createZipFile($pathArray);
 
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+        if(file_exists($zipPath)) {
+            return response()->download($zipPath)->deleteFileAfterSend(true);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'No se ha podido generar el fichero zip',
+        ]);
     }
 }
