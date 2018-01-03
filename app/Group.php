@@ -29,10 +29,10 @@ class Group extends Model
     /**
      * Devuelve todos los archivos y carpetas de un grupo.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function files(){
-        return $this->archives()->get()->merge($this->folders()->get());
+    public function files() {
+        return $this->hasMany('App\File');
     }
 
     /**
@@ -40,7 +40,7 @@ class Group extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function archives(){
+    public function archives() {
         return $this->hasMany('App\Archive');
     }
 
@@ -49,7 +49,7 @@ class Group extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function folders(){
+    public function folders() {
        return $this->hasMany('App\Folder');
     }
 }
