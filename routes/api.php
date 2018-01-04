@@ -29,6 +29,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::group(['middleware' => ['user.ownership']], function () {
         Route::get('users/{user}/folders/{folder}', 'FileController@listUserFolder');
+        Route::post('users/{user}/folders/{folder}/folders', 'FileController@createUserFolder');
+        Route::post('users/{user}/folders/{folder}/archives', 'FileController@uploadArchive');
     });
     
     Route::group(['middleware' => ['group.membership']], function () {
@@ -36,6 +38,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         
         Route::group(['middleware' => ['group.ownership']], function () {
             Route::get('groups/{group}/folders/{folder}', 'FileController@listGroupFolder');
+            Route::post('groups/{group}/folders/{folder}/folders', 'FileController@createGroupFolder');
+            Route::post('groups/{group}/folders/{folder}/archives', 'FileController@uploadArchive');
         });
         
         Route::group(['middleware' => ['group.many.ownership']], function () {

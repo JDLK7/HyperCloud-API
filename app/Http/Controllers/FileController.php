@@ -149,4 +149,77 @@ class FileController extends Controller
             'message' => 'No se ha podido generar el fichero zip',
         ]);
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Group $group
+     * @param Folder $folder
+     * @return Illuminate\Http\Response
+     */
+    public function createUserFolder(Request $request, User $user, Folder $folder) {
+        $newFolderName = $request->get('name');
+        $newFolderPath = $folder->path . $newFolderName . "/";
+
+        $exists = Folder::where('path', $newFolderPath)->exists();
+
+        if($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya existe una carpeta con ese nombre',
+            ], 409);
+        }
+
+        $newFolder = Folder::updateOrCreate([
+            'name' => $newFolderName,
+            'path' => $newFolderPath,
+            'size' => 4096,
+        ]);
+        
+        $newFolder->account()->associate($user->account);
+        $newFolder->folder()->associate($folder);
+        $newFolder->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Carpeta creada correctamente',
+        ]);
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param Group $group
+     * @param Folder $folder
+     * @return Illuminate\Http\Response
+     */
+    public function createGroupFolder(Request $request, Group $group, Folder $folder) {
+        $newFolderName = $request->get('name');
+        $newFolderPath = $folder->path . $newFolderName . "/";
+
+        $exists = Folder::where('path', $newFolderPath)->exists();
+
+        if($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ya existe una carpeta con ese nombre',
+            ], 409);
+        }
+
+        $newFolderPath = $folder->path . $newFolderName . "/";
+        $newFolder = Folder::updateOrCreate([
+            'name' => $newFolderName,
+            'path' => $newFolderPath,
+            'size' => 4096,
+        ]);
+        
+        $newFolder->group()->associate($group);
+        $newFolder->folder()->associate($folder);
+        $newFolder->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Carpeta creada correctamente',
+        ]);
+    }
 }
