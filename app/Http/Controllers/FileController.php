@@ -6,11 +6,19 @@ use App\User;
 use App\File;
 use App\Group;
 use App\Folder;
+use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class FileController extends Controller
-{
+abstract class FileController extends Controller
+{   
+    /**
+     * Servicio...
+     *
+     * @var \App\Services\FileService
+     */
+    protected $fileService;
+
     /**
      * Genera un fichero zip con las rutas de ficheros que recibe por parámetro,
      * manteniendo la posible estructura de directorios de las carpetas. 
@@ -19,7 +27,7 @@ class FileController extends Controller
      * @param array $pathArray
      * @return string
      */
-    private function createZipFile($pathArray) {
+    protected function createZipFile($pathArray) {
         $user = Auth::user();
         $zip = new \Chumper\Zipper\Zipper;
         $zipPath = public_path(
@@ -47,75 +55,9 @@ class FileController extends Controller
 
         return $zipPath; 
     }
-    
-    /**
-     * Devuelve un listado paginado con los ficheros 
-     * pertenecientes al usuario.
-     *
-     * @param User $user
-     * @return Illuminate\Http\Response
-     */
-    public function listUserFiles(User $user) {
-        $files = $user->account->files()->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros
-     * contenidos en la carpeta del usuario.
-     *
-     * @param User $user
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function listUserFolder(User $user, Folder $folder) {
-        $files = $folder->files()
-            ->where('account_id', $user->account->id)
-            ->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros 
-     * pertenecientes al grupo.
-     *
-     * @param Group $group
-     * @return Illuminate\Http\Response
-     */
-    public function listGroupFiles(Group $group) {
-        $files = $group->files()->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros
-     * contenidos en la carpeta del grupo.
-     *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function listGroupFolder(Group $group, Folder $folder) {
-        $files = $folder->files()
-            ->where('group_id', $group->id)
-            ->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
+    public function __construct() {
+        $this->fileService = new FileService();
     }
 
     /**
@@ -147,79 +89,6 @@ class FileController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'No se ha podido generar el fichero zip',
-        ]);
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function createUserFolder(Request $request, User $user, Folder $folder) {
-        $newFolderName = $request->get('name');
-        $newFolderPath = $folder->path . $newFolderName . "/";
-
-        $exists = Folder::where('path', $newFolderPath)->exists();
-
-        if($exists) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ya existe una carpeta con ese nombre',
-            ], 409);
-        }
-
-        $newFolder = Folder::updateOrCreate([
-            'name' => $newFolderName,
-            'path' => $newFolderPath,
-            'size' => 4096,
-        ]);
-        
-        $newFolder->account()->associate($user->account);
-        $newFolder->folder()->associate($folder);
-        $newFolder->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Carpeta creada correctamente',
-        ]);
-    }
-
-    /**
-     * Undocumented function
-     *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function createGroupFolder(Request $request, Group $group, Folder $folder) {
-        $newFolderName = $request->get('name');
-        $newFolderPath = $folder->path . $newFolderName . "/";
-
-        $exists = Folder::where('path', $newFolderPath)->exists();
-
-        if($exists) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ya existe una carpeta con ese nombre',
-            ], 409);
-        }
-
-        $newFolderPath = $folder->path . $newFolderName . "/";
-        $newFolder = Folder::updateOrCreate([
-            'name' => $newFolderName,
-            'path' => $newFolderPath,
-            'size' => 4096,
-        ]);
-        
-        $newFolder->group()->associate($group);
-        $newFolder->folder()->associate($folder);
-        $newFolder->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Carpeta creada correctamente',
         ]);
     }
 }

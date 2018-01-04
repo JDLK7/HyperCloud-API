@@ -25,29 +25,29 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::get('logout', 'AuthController@logout');
     
-    Route::get('users/{user}/files', 'FileController@listUserFiles');
+    Route::get('users/{user}/files', 'FileUserController@index');
 
     Route::group(['middleware' => ['user.ownership']], function () {
-        Route::get('users/{user}/folders/{folder}', 'FileController@listUserFolder');
-        Route::post('users/{user}/folders/{folder}/folders', 'FileController@createUserFolder');
-        Route::post('users/{user}/folders/{folder}/archives', 'FileController@uploadArchive');
-    });
-    
-    Route::group(['middleware' => ['group.membership']], function () {
-        Route::get('groups/{group}/files', 'FileController@listGroupFiles');
-        
-        Route::group(['middleware' => ['group.ownership']], function () {
-            Route::get('groups/{group}/folders/{folder}', 'FileController@listGroupFolder');
-            Route::post('groups/{group}/folders/{folder}/folders', 'FileController@createGroupFolder');
-            Route::post('groups/{group}/folders/{folder}/archives', 'FileController@uploadArchive');
-        });
-        
-        Route::group(['middleware' => ['group.many.ownership']], function () {
-            Route::post('groups/{group}/files/download', 'FileController@download');
-        });
+        Route::get('users/{user}/folders/{folder}', 'FileUserController@show');
+        Route::post('users/{user}/folders/{folder}/folders', 'FileUserController@createFolder');
+        // Route::post('users/{user}/folders/{folder}/archives', 'FileController@uploadArchive');
     });
 
     Route::group(['middleware' => ['user.many.ownership']], function () {
-        Route::post('users/{user}/files/download', 'FileController@download');
+        Route::post('users/{user}/files/download', 'FileUserController@download');
+    });
+    
+    Route::group(['middleware' => ['group.membership']], function () {
+        Route::get('groups/{group}/files', 'FileGroupController@index');
+        
+        Route::group(['middleware' => ['group.ownership']], function () {
+            Route::get('groups/{group}/folders/{folder}', 'FileGroupController@show');
+            Route::post('groups/{group}/folders/{folder}/folders', 'FileGroupController@createFolder');
+            // Route::post('groups/{group}/folders/{folder}/archives', 'FileController@uploadArchive');
+        });
+        
+        Route::group(['middleware' => ['group.many.ownership']], function () {
+            Route::post('groups/{group}/files/download', 'FileGroupController@download');
+        });
     });
 });
