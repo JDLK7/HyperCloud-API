@@ -32,6 +32,13 @@ class File extends Model
     protected static $singleTableSubclasses = [Archive::class, Folder::class];
 
     /**
+     * Variables asignables en masa.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'path', 'extension', 'size'];
+
+    /**
      * Indica si los IDs son auto-incrementables.
      *
      * @var bool
@@ -56,5 +63,16 @@ class File extends Model
      */
     public function group() {
         return $this->belongsTo('App\Group');
+    }
+
+    /**
+     * Relación reflexiva que representa las carpetas 
+     * contenidas dentro de otra carpeta. Devuelve
+     * la carpeta padre del fichero actual.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function folder() {
+        return $this->belongsTo('App\Folder');
     }
 }
