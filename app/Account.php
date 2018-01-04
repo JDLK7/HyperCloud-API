@@ -95,4 +95,16 @@ class Account extends Model
     public function getAvatarPathAttribute() {
         return "";
     }
+
+    /**
+     * Comprueba si la cuenta tiene espacio suficiente para albergar $bytes.
+     *
+     * @param int $bytes
+     * @return boolean
+     */
+    public function canStore($bytes) {
+        $spaceLeft = $this->suscription->spaceOffer - ($this->space + $bytes);
+
+        return $spaceLeft >= 0;
+    }
 }

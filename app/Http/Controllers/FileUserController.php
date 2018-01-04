@@ -52,6 +52,13 @@ class FileUserController extends FileController
      */
     public function createFolder(Request $request, User $user, Folder $folder) {
         $name = $request->get('name');
+        
+        if( !$user->account->canStore(4096)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede crear la carpeta porque la cuenta no tiene suficiente espacio disponible',
+            ]);
+        }
 
         try {
             $newFolder = $this->fileService->createFolder($name, $folder);

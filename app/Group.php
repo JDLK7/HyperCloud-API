@@ -52,4 +52,24 @@ class Group extends Model
     public function folders() {
        return $this->hasMany('App\Folder');
     }
+
+    /**
+     * Comprueba si las cuentas del grupo tienen 
+     * espacio suficiente para albergar $bytes.
+     *
+     * @param int $bytes
+     * @return boolean
+     */
+    public function canStore($bytes) {
+        $accountsCount = $this->accounts()->count();
+        $bytesPerAccount = $bytes / $accountsCount;
+
+        foreach ($this->accounts as $account) {
+            if( !$account->canStore($bytesPerAccount)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
