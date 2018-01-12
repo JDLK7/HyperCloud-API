@@ -39,6 +39,13 @@ class File extends Model
     protected $fillable = ['name', 'path', 'extension', 'size'];
 
     /**
+     * Campos ocultos al serializar el modelo.
+     *
+     * @var array
+     */
+    protected $hidden = ['account_id', 'group_id', 'created_at', 'path'];
+
+    /**
      * Indica si los IDs son auto-incrementables.
      *
      * @var bool
