@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Uuids;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
@@ -37,6 +38,20 @@ class File extends Model
      * @var array
      */
     protected $fillable = ['name', 'path', 'extension', 'size'];
+
+    /**
+     * Campos ocultos al serializar el modelo.
+     *
+     * @var array
+     */
+    protected $hidden = ['account_id', 'group_id', 'created_at', 'path'];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['icon'];
 
     /**
      * Indica si los IDs son auto-incrementables.
@@ -74,5 +89,21 @@ class File extends Model
      */
     public function folder() {
         return $this->belongsTo('App\Folder');
+    }
+
+    /**
+     * Accessor que devuelve el icono según el formato del fichero.
+     *
+     * @return string
+     */
+    public function getIconAttribute() {
+        $iconExtension = DB::table('extension_icon')
+            ->where('extension', $this->extension)->first();
+
+        if(!is_null($iconExtension)) {
+            return $iconExtension->icon;
+        }
+
+        return 'fa-question';
     }
 }
