@@ -11,6 +11,7 @@ use JWTAuth;
 use Validator;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -159,10 +160,18 @@ class AuthController extends Controller
                 'error' => 'could_not_create_token'
             ], 500);
         }
+
+        $user = Auth::user();
+        $accountFolder = $user->account->folder();
+
         // all good so return the token
         return response()->json([
             'success' => true,
-            'data'=> [ 'token' => $token ]
+            'user' => $user,
+            'accountFolder' => $accountFolder,
+            'data'=> [ 
+                'token' => $token 
+            ],
         ]);
     }
 

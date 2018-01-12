@@ -10,6 +10,27 @@ class Account extends Model
 {
     use Uuids, CreatesFolder;
     
+    protected static function boot() {
+        
+        parent::boot();
+
+        /**
+         * Crea la carpeta del usuario y se la asocia.
+         */
+        static::created(function ($account) {
+            $usersFolder = Folder::where('path', 'files/users/')->first();
+
+            $accountFolder = Folder::create([
+                'name' => $account->userName, 
+                'path' => $account->path, 
+                'size' => 4096
+            ]);
+            $accountFolder->folder()->associate($usersFolder);
+            $accountFolder->account()->associate($account);
+            $accountFolder->save();
+        });
+    }
+    
     /**
      * Indicates if the IDs are auto-incrementing.
      *
@@ -85,6 +106,15 @@ class Account extends Model
      */
     public function getPathAttribute() {
         return "files/users/$this->userName/";
+    }
+
+    /**
+     * Devuelve la carpeta del usuario.
+     *
+     * @return \App\Folder
+     */
+    public function folder() {
+        return Folder::where('path', $this->path)->first();
     }
 
     /**
