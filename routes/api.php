@@ -30,7 +30,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::group(['middleware' => ['user.ownership']], function () {
         Route::get('users/{user}/folders/{folder}', 'FileUserController@show');
         Route::post('users/{user}/folders/{folder}/folders', 'FileUserController@createFolder');
-        // Route::post('users/{user}/folders/{folder}/archives', 'FileController@uploadArchive');
+        Route::post('users/{user}/folders/{folder}/archives', 'FileController@uploadArchive');
     });
 
     Route::group(['middleware' => ['user.many.ownership']], function () {

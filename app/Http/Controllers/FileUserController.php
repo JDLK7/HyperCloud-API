@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Folder;
 use Illuminate\Http\Request;
+use App\Archive;
 
 class FileUserController extends FileController
 {
@@ -77,5 +78,42 @@ class FileUserController extends FileController
             'success' => true,
             'message' => 'Carpeta creada correctamente',
         ]);
+    }
+
+    public function uploadArchive(Request $request, User $user, Folder $folder) {
+        $files = $request->file('files');
+
+        foreach($files as $file) {
+            $name = $file->getClientOriginalName();
+            
+            for($i = strlen($name)-1; $i >= 0; $i--){
+                if($name[$i] == '.'){
+                    $name = substr($name, 0, $i);
+                    break;
+                }
+            }
+            $extension = $file->getClientOriginalExtension();
+            $size = $file->getSize();
+
+            try {
+                $archive = Archive::create([
+                    'name'      => $name,
+                    'path'      => $folder->path . $name,
+                    'extension' => $extension,
+                    'size'      => $size,
+                ]);
+
+                $archive->account()->associate($user->account);
+                $archive->folder()->associate($folder);
+                $archive->save();
+                
+            } catch(Exception $ex) {
+                return back()->withErrors($ex->getMessage());
+            }
+
+            $file->move(base_path($path), $name.'.'.$extension);
+        }
+
+        return back();
     }
 }
