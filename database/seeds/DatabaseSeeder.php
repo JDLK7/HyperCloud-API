@@ -72,5 +72,7 @@ class DatabaseSeeder extends Seeder
                         ->save(factory(App\Folder::class)->create());
                 });
         }
+
+        $this->call(ExtensionIconSeeder::class);
     }
 }
