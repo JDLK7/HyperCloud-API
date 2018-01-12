@@ -106,12 +106,12 @@ class FileUserController extends FileController
                 $archive->account()->associate($user->account);
                 $archive->folder()->associate($folder);
                 $archive->save();
-                
+
             } catch(Exception $ex) {
                 return back()->withErrors($ex->getMessage());
             }
 
-            $file->move(base_path($path), $name.'.'.$extension);
+            $file->move(base_path($folder->path), $name.'.'.$extension);
         }
 
         return back();
