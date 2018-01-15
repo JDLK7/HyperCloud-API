@@ -15,7 +15,7 @@ class CheckIfGroupOwnsResource
      */
     public function handle($request, Closure $next)
     {
-        $file = $request->folder;
+        $file = $request->route('folder');
 
         $fileOwner = $file->group;
         $fileApplicant = $request->group;

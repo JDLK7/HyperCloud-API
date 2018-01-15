@@ -24,4 +24,24 @@ class Folder extends File
     public function files() {
         return $this->hasMany('App\File');
     }
+
+    /**
+     * Relación reflexiva que representa las carpetas 
+     * contenidas dentro de otra carpeta.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function folders() {
+        return $this->hasMany('App\Folder');
+    }
+
+    /**
+     * Relación reflexiva que representa los archivos 
+     * contenidas dentro de una carpeta.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function archives() {
+        return $this->hasMany('App\Archive');
+    }
 }

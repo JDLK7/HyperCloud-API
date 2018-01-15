@@ -7,10 +7,18 @@ use App\File;
 use App\Group;
 use App\Folder;
 use Illuminate\Http\Request;
+use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 
-class FileController extends Controller
-{
+abstract class FileController extends Controller
+{   
+    /**
+     * Servicio...
+     *
+     * @var \App\Services\FileService
+     */
+    protected $fileService;
+
     /**
      * Genera un fichero zip con las rutas de ficheros que recibe por parámetro,
      * manteniendo la posible estructura de directorios de las carpetas. 
@@ -19,7 +27,7 @@ class FileController extends Controller
      * @param array $pathArray
      * @return string
      */
-    private function createZipFile($pathArray) {
+    protected function createZipFile($pathArray) {
         $user = Auth::user();
         $zip = new \Chumper\Zipper\Zipper;
         $zipPath = public_path(
@@ -47,75 +55,9 @@ class FileController extends Controller
 
         return $zipPath; 
     }
-    
-    /**
-     * Devuelve un listado paginado con los ficheros 
-     * pertenecientes al usuario.
-     *
-     * @param User $user
-     * @return Illuminate\Http\Response
-     */
-    public function listUserFiles(User $user) {
-        $files = $user->account->files()->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros
-     * contenidos en la carpeta del usuario.
-     *
-     * @param User $user
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function listUserFolder(User $user, Folder $folder) {
-        $files = $folder->files()
-            ->where('account_id', $user->account->id)
-            ->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros 
-     * pertenecientes al grupo.
-     *
-     * @param Group $group
-     * @return Illuminate\Http\Response
-     */
-    public function listGroupFiles(Group $group) {
-        $files = $group->files()->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
-    }
-
-    /**
-     * Devuelve un listado paginado con los ficheros
-     * contenidos en la carpeta del grupo.
-     *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
-     */
-    public function listGroupFolder(Group $group, Folder $folder) {
-        $files = $folder->files()
-            ->where('group_id', $group->id)
-            ->paginate(10);
-
-        return response()->json([
-            'success' => true,
-            'files' => $files,
-        ]);
+    public function __construct() {
+        $this->fileService = new FileService();
     }
 
     /**
@@ -133,15 +75,24 @@ class FileController extends Controller
             $file = File::find($files[0]);
 
             if($file->type !== 'folder') {
-                return response()->download(base_path($file->path));
+                return response()->download(
+                    base_path($file->path), 
+                    $file->name, 
+                    ['X-FileName' => $file->name]
+                );
             }
         }
 
         $pathArray = File::whereIn('id', $files)->get()->pluck('path');
         $zipPath = $this->createZipFile($pathArray);
+        $zipName = basename($zipPath);
 
         if(file_exists($zipPath)) {
-            return response()->download($zipPath)->deleteFileAfterSend(true);
+            return response()->download(
+                $zipPath,
+                $zipName,
+                ['X-FileName' => $zipName]
+            )->deleteFileAfterSend(true);
         }
         
         return response()->json([

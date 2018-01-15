@@ -17,7 +17,7 @@ class CheckIfUserOwnsResource
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        $file = $request->folder;
+        $file = $request->route('folder');
 
         $fileOwner = $file->account;
         $fileApplicant = $user->account;

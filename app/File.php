@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Uuids;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
@@ -32,6 +33,27 @@ class File extends Model
     protected static $singleTableSubclasses = [Archive::class, Folder::class];
 
     /**
+     * Variables asignables en masa.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'path', 'extension', 'size'];
+
+    /**
+     * Campos ocultos al serializar el modelo.
+     *
+     * @var array
+     */
+    protected $hidden = ['account', 'group', 'folder', 'created_at', 'path'];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['icon'];
+
+    /**
      * Indica si los IDs son auto-incrementables.
      *
      * @var bool
@@ -56,5 +78,45 @@ class File extends Model
      */
     public function group() {
         return $this->belongsTo('App\Group');
+    }
+
+    /**
+     * Relación reflexiva que representa las carpetas 
+     * contenidas dentro de otra carpeta. Devuelve
+     * la carpeta padre del fichero actual.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function folder() {
+        return $this->belongsTo('App\Folder');
+    }
+
+    /**
+     * Comprueba si el fichero es una carpeta.
+     *
+     * @return boolean
+     */
+    public function isFolder() {
+        return $this->type === 'folder';
+    }
+
+    /**
+     * Accessor que devuelve el icono según el formato del fichero.
+     *
+     * @return string
+     */
+    public function getIconAttribute() {
+        if($this->isFolder()) {
+            return 'fa-folder';
+        }
+
+        $iconExtension = DB::table('extension_icon')
+            ->where('extension', $this->extension)->first();
+
+        if(!is_null($iconExtension)) {
+            return $iconExtension->icon;
+        }
+
+        return 'fa-question';
     }
 }

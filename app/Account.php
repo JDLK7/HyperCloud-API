@@ -10,6 +10,27 @@ class Account extends Model
 {
     use Uuids, CreatesFolder;
     
+    protected static function boot() {
+        
+        parent::boot();
+
+        /**
+         * Crea la carpeta del usuario y se la asocia.
+         */
+        static::created(function ($account) {
+            $usersFolder = Folder::where('path', 'files/users/')->first();
+
+            $accountFolder = Folder::create([
+                'name' => $account->userName, 
+                'path' => $account->path, 
+                'size' => 4096
+            ]);
+            $accountFolder->folder()->associate($usersFolder);
+            $accountFolder->account()->associate($account);
+            $accountFolder->save();
+        });
+    }
+    
     /**
      * Indicates if the IDs are auto-incrementing.
      *
@@ -88,11 +109,32 @@ class Account extends Model
     }
 
     /**
+     * Devuelve la carpeta del usuario.
+     *
+     * @return \App\Folder
+     */
+    public function folder() {
+        return Folder::where('path', $this->path)->first();
+    }
+
+    /**
      * Accessor que devuelve la ruta de la imagen de perfil del usuario
      *
      * @return string
      */
     public function getAvatarPathAttribute() {
         return "";
+    }
+
+    /**
+     * Comprueba si la cuenta tiene espacio suficiente para albergar $bytes.
+     *
+     * @param int $bytes
+     * @return boolean
+     */
+    public function canStore($bytes) {
+        $spaceLeft = $this->suscription->spaceOffer - ($this->space + $bytes);
+
+        return $spaceLeft >= 0;
     }
 }

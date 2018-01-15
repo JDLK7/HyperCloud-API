@@ -19,7 +19,7 @@ class CheckIfUserIsGroupMember
     public function handle($request, Closure $next)
     {
         $user = $request->user();
-        $group = $request->group;
+        $group = $request->route('group');
 
         $isMember = $group->accounts()->find($user->account->id) !== null;
 
