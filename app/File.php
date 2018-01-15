@@ -92,11 +92,24 @@ class File extends Model
     }
 
     /**
+     * Comprueba si el fichero es una carpeta.
+     *
+     * @return boolean
+     */
+    public function isFolder() {
+        return $this->type === 'folder';
+    }
+
+    /**
      * Accessor que devuelve el icono según el formato del fichero.
      *
      * @return string
      */
     public function getIconAttribute() {
+        if($this->isFolder()) {
+            return 'fa-folder';
+        }
+
         $iconExtension = DB::table('extension_icon')
             ->where('extension', $this->extension)->first();
 
