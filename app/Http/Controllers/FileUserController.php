@@ -14,8 +14,8 @@ class FileUserController extends FileController
      * Devuelve un listado paginado con los ficheros 
      * pertenecientes al usuario.
      *
-     * @param User $user
-     * @return Illuminate\Http\Response
+     * @param \App\User $user
+     * @return \Illuminate\Http\Response
      */
     public function index(User $user) {
         $files = $user->account->files()->paginate(10);
@@ -30,9 +30,9 @@ class FileUserController extends FileController
      * Devuelve un listado paginado con los ficheros
      * contenidos en la carpeta del usuario.
      *
-     * @param User $user
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
+     * @param \App\User $user
+     * @param \App\Folder $folder
+     * @return \Illuminate\Http\Response
      */
     public function show(User $user, Folder $folder) {
         $files = $folder->files()
@@ -49,9 +49,9 @@ class FileUserController extends FileController
      * Devuelve un listado paginado con los ficheros
      * contenidos en la carpeta del usuario.
      *
-     * @param User $user
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
+     * @param \App\User $user
+     * @param \App\Folder $folder
+     * @return \Illuminate\Http\Response
      */
     public function listFolders(User $user, Folder $folder) {
         $folders = $folder->folders()
@@ -66,9 +66,10 @@ class FileUserController extends FileController
     /**
      * Crea una nueva carpeta y la asocia a la cuenta del usuario.
      *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param \App\User $user
+     * @param \App\Folder $folder
+     * @return \Illuminate\Http\Response
      */
     public function createFolder(Request $request, User $user, Folder $folder) {
         $name = $request->get('name');
@@ -100,6 +101,14 @@ class FileUserController extends FileController
         ]);
     }
 
+    /**
+     * Sube un fichero y lo asocia a la cuenta del usuario
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\User $user
+     * @param \App\Folder $folder
+     * @return \Illuminate\Http\Response
+     */
     public function uploadArchive(Request $request, User $user, Folder $folder) {
         $files = $request->file('files');
 
@@ -107,6 +116,13 @@ class FileUserController extends FileController
             $name = $file->getClientOriginalName();
             $extension = $file->getClientOriginalExtension();
             $size = $file->getSize();
+
+            if( !$user->account->canStore($size)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede subir el archivo porque la cuenta no tiene suficiente espacio disponible',
+                ]);
+            }
 
             try {
                 $newArchive = $this->fileService->createArchive($name, $extension, $size, $folder);
@@ -126,7 +142,7 @@ class FileUserController extends FileController
 
         return response()->json([
             'success' => true,
-            'message' => 'Archivo subido correctamente',
+            'message' => 'Archivo/s subido correctamente',
             'archive' => $newArchive,
         ]);
     }

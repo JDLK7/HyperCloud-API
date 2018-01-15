@@ -14,7 +14,7 @@ class FileGroupController extends FileController
      * Devuelve un listado paginado con los ficheros 
      * pertenecientes al grupo.
      *
-     * @param Group $group
+     * @param \App\Group $group
      * @return Illuminate\Http\Response
      */
     public function index(Group $group) {
@@ -30,9 +30,9 @@ class FileGroupController extends FileController
      * Devuelve un listado paginado con los ficheros
      * contenidos en la carpeta del grupo.
      *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
+     * @param \App\Group $group
+     * @param \App\Folder $folder
+     * @return \App\Illuminate\Http\Response
      */
     public function show(Group $group, Folder $folder) {
         $files = $folder->files()
@@ -48,9 +48,9 @@ class FileGroupController extends FileController
     /**
      * Crea una nueva carpeta y la asocia al grupo.
      *
-     * @param Group $group
-     * @param Folder $folder
-     * @return Illuminate\Http\Response
+     * @param \App\Group $group
+     * @param \App\Folder $folder
+     * @return \App\Illuminate\Http\Response
      */
     public function createFolder(Request $request, Group $group, Folder $folder) {
         $name = $request->get('name');
@@ -78,6 +78,53 @@ class FileGroupController extends FileController
         return response()->json([
             'success' => true,
             'message' => 'Carpeta creada correctamente',
+            'folder' => $newFolder,
+        ]);
+    }
+
+    /**
+     * Sube un fichero y lo al grupo
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Group $group
+     * @param \App\Folder $folder
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadArchive(Request $request, Group $group, Folder $folder) {
+        $files = $request->file('files');
+
+        foreach($files as $file) {
+            $name = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $size = $file->getSize();
+
+            if( !$group->canStore($size)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede subir el archivo porque la cuenta no tiene suficiente espacio disponible',
+                ]);
+            }
+
+            try {
+                $newArchive = $this->fileService->createArchive($name, $extension, $size, $folder);
+
+            } catch(FileServiceException $ex) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $ex->getMessage(),
+                ], 409);
+            }
+
+            $newArchive->group()->associate($user->account);
+            $newArchive->save();
+
+            $file->move(base_path($folder->path), $name);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Archivo/s subido correctamente',
+            'archive' => $newArchive,
         ]);
     }
 }
