@@ -55,7 +55,8 @@ class FileUserController extends FileController
      */
     public function listFolders(User $user, Folder $folder) {
         $folders = $folder->folders()
-            ->where('account_id', $user->account->id);
+            ->where('account_id', $user->account->id)
+            ->get();
 
         return response()->json([
             'success' => true,
