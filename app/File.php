@@ -44,7 +44,7 @@ class File extends Model
      *
      * @var array
      */
-    protected $hidden = ['account_id', 'group_id', 'created_at', 'path'];
+    protected $hidden = ['account', 'group', 'folder', 'created_at', 'path'];
 
     /**
      * The accessors to append to the model's array form.

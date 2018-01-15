@@ -6,8 +6,8 @@ use App\User;
 use App\File;
 use App\Group;
 use App\Folder;
-use App\Services\FileService;
 use Illuminate\Http\Request;
+use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 
 abstract class FileController extends Controller
@@ -73,26 +73,25 @@ abstract class FileController extends Controller
 
         if($fileCount === 1) {
             $file = File::find($files[0]);
-            $clientName = basename($file->path);
 
             if($file->type !== 'folder') {
                 return response()->download(
                     base_path($file->path), 
-                    $clientName, 
-                    ['X-FileName' => $clientName]
+                    $file->name, 
+                    ['X-FileName' => $file->name]
                 );
             }
         }
 
         $pathArray = File::whereIn('id', $files)->get()->pluck('path');
         $zipPath = $this->createZipFile($pathArray);
-        $clientName = basename($zipPath);
+        $zipName = basename($zipPath);
 
         if(file_exists($zipPath)) {
             return response()->download(
                 $zipPath,
-                $clientName,
-                ['X-FileName' => $clientName]
+                $zipName,
+                ['X-FileName' => $zipName]
             )->deleteFileAfterSend(true);
         }
         

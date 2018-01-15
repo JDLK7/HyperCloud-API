@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Folder;
-use Illuminate\Http\Request;
 use App\Archive;
+use App\Services\FileServiceException;
+use Illuminate\Http\Request;
 
 class FileUserController extends FileController
 {
@@ -95,6 +96,7 @@ class FileUserController extends FileController
         return response()->json([
             'success' => true,
             'message' => 'Carpeta creada correctamente',
+            'folder' => $newFolder,
         ]);
     }
 
@@ -103,35 +105,29 @@ class FileUserController extends FileController
 
         foreach($files as $file) {
             $name = $file->getClientOriginalName();
-            
-            for($i = strlen($name)-1; $i >= 0; $i--){
-                if($name[$i] == '.'){
-                    $name = substr($name, 0, $i);
-                    break;
-                }
-            }
             $extension = $file->getClientOriginalExtension();
             $size = $file->getSize();
 
             try {
-                $archive = Archive::create([
-                    'name'      => $name,
-                    'path'      => "$folder->path$name.$extension",
-                    'extension' => $extension,
-                    'size'      => $size,
-                ]);
+                $newArchive = $this->fileService->createArchive($name, $extension, $size, $folder);
 
-                $archive->account()->associate($user->account);
-                $archive->folder()->associate($folder);
-                $archive->save();
-
-            } catch(Exception $ex) {
-                return back()->withErrors($ex->getMessage());
+            } catch(FileServiceException $ex) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $ex->getMessage(),
+                ], 409);
             }
 
-            $file->move(base_path($folder->path), $name.'.'.$extension);
+            $newArchive->account()->associate($user->account);
+            $newArchive->save();
+
+            $file->move(base_path($folder->path), $name);
         }
 
-        return back();
+        return response()->json([
+            'success' => true,
+            'message' => 'Archivo subido correctamente',
+            'archive' => $newArchive,
+        ]);
     }
 }
