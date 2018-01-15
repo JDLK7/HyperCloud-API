@@ -73,17 +73,27 @@ abstract class FileController extends Controller
 
         if($fileCount === 1) {
             $file = File::find($files[0]);
+            $clientName = basename($file->path);
 
             if($file->type !== 'folder') {
-                return response()->download(base_path($file->path));
+                return response()->download(
+                    base_path($file->path), 
+                    $clientName, 
+                    ['X-FileName' => $clientName]
+                );
             }
         }
 
         $pathArray = File::whereIn('id', $files)->get()->pluck('path');
         $zipPath = $this->createZipFile($pathArray);
+        $clientName = basename($zipPath);
 
         if(file_exists($zipPath)) {
-            return response()->download($zipPath)->deleteFileAfterSend(true);
+            return response()->download(
+                $zipPath,
+                $clientName,
+                ['X-FileName' => $clientName]
+            )->deleteFileAfterSend(true);
         }
         
         return response()->json([
