@@ -81,7 +81,7 @@ $factory->define(App\Archive::class, function (Faker\Generator $faker) {
 $factory->define(App\Suscription::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->word,
-        'spaceOffer' => $faker->numberBetween(0, 1000),
+        'spaceOffer' => $faker->numberBetween(10737418240, 1099511627776),
         'price' => $faker->numberBetween(3, 25),
         'description' => $faker->sentence,
     ];
