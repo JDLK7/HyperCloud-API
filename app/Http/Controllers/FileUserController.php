@@ -45,6 +45,24 @@ class FileUserController extends FileController
     }
 
     /**
+     * Devuelve un listado paginado con los ficheros
+     * contenidos en la carpeta del usuario.
+     *
+     * @param User $user
+     * @param Folder $folder
+     * @return Illuminate\Http\Response
+     */
+    public function listFolders(User $user, Folder $folder) {
+        $folders = $folder->folders()
+            ->where('account_id', $user->account->id);
+
+        return response()->json([
+            'success' => true,
+            'folders' => $folders,
+        ]);
+    }
+
+    /**
      * Crea una nueva carpeta y la asocia a la cuenta del usuario.
      *
      * @param Group $group
