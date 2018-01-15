@@ -98,7 +98,7 @@ class FileUserController extends FileController
             try {
                 $archive = Archive::create([
                     'name'      => $name,
-                    'path'      => $folder->path . $name,
+                    'path'      => "$folder->path$name.$extension",
                     'extension' => $extension,
                     'size'      => $size,
                 ]);
