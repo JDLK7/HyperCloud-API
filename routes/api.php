@@ -17,15 +17,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register', 'AuthController@register');
-Route::post('login', 'AuthController@login');
-Route::post('recover', 'AuthController@recover');
+Route::post('login', 'LoginController@login');
+Route::post('register', 'RegisterController@register');
 
 Route::get('suscriptions', 'SuscriptionController@index');
 
 Route::group(['middleware' => ['jwt.auth']], function () {
 
-    Route::get('logout', 'AuthController@logout');
+    Route::get('logout', 'LoginController@logout');
     
     Route::get('users/{user}/files', 'FileUserController@index');
 

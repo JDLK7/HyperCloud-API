@@ -99,4 +99,16 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Verificación de usuario
+    |--------------------------------------------------------------------------
+    |
+    | Especifica si un usuario, al registrarse, 
+    | debe verificar su cuenta o no.
+    |
+    */
+
+    'verification' => env('USER_VERIFICATION', false),
+
 ];

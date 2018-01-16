@@ -15,6 +15,6 @@ Route::get('/', function () {
     return File::get(public_path('index.html'));
 });
 
-Route::get('user/verify/{verification_code}', 'AuthController@verifyUser');
+Route::get('user/verify/{verification_code}', 'RegisterController@verifyUser');
 Route::get('password/reset/{token?}', 'Auth\PasswordController@showResetForm');
 Route::post('password/reset', 'Auth\PasswordController@reset');
