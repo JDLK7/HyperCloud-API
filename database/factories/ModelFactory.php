@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -41,9 +43,7 @@ $factory->define(App\Account::class, function (Faker\Generator $faker) {
 $factory->define(App\Folder::class, function (Faker\Generator $faker) {
 
     $name = $faker->word;
-    $path = "files/test/$name/";
-
-    @mkdir(base_path('files/test/'));
+    $path = "test/$name/";
 
     return [
         'name' => $name,
@@ -61,10 +61,9 @@ $factory->define(App\Archive::class, function (Faker\Generator $faker) {
 
     $extension = $faker->fileExtension;
     $name = $faker->word . '.' . $extension;
-    $path = "files/test/$name";
+    $path = "test/$name";
 
-    @mkdir(base_path('files/test/'));
-    touch(base_path($path));
+    Storage::disk('files')->put($path, $faker->text);
 
     return [
         'name' => $name,
@@ -95,7 +94,7 @@ $factory->define(App\Group::class, function (Faker\Generator $faker) {
     return [
         'name' => $name,
         'description' => $faker->sentence,
-        'path' => "files/groups/$name/",
+        'path' => "groups/$name/",
         'iconPath' => '',
     ];
 });

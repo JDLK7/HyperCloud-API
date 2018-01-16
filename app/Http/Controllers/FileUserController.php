@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Folder;
 use App\Archive;
-use App\Services\FileServiceException;
 use Illuminate\Http\Request;
+use App\Services\FileServiceException;
+use Illuminate\Support\Facades\Storage;
 
 class FileUserController extends FileController
 {
@@ -142,7 +143,7 @@ class FileUserController extends FileController
 
             $this->dispatchFileCreatedEvent($newArchive);
 
-            $file->move(base_path($folder->path), $name);
+            $file->storeAs($folder->path, $name, 'files');
         }
 
         return response()->json([

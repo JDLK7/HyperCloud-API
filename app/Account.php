@@ -18,7 +18,7 @@ class Account extends Model
          * Crea la carpeta del usuario y se la asocia.
          */
         static::created(function ($account) {
-            $usersFolder = Folder::where('path', 'files/users/')->first();
+            $usersFolder = Folder::where('path', 'users/')->first();
 
             $accountFolder = Folder::create([
                 'name' => $account->userName, 
@@ -105,7 +105,7 @@ class Account extends Model
      * @return string
      */
     public function getPathAttribute() {
-        return "files/users/$this->userName/";
+        return "users/$this->userName/";
     }
 
     /**
