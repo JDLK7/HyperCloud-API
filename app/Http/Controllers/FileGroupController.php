@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\Folder;
-use App\Services\FileServiceException;
 
 use Illuminate\Http\Request;
+use App\Services\FileServiceException;
+use Illuminate\Support\Facades\Storage;
 
 class FileGroupController extends FileController
 {
@@ -122,7 +123,7 @@ class FileGroupController extends FileController
 
             $this->dispatchFileCreatedEvent($newArchive);
 
-            $file->move(base_path($folder->path), $name);
+            $file->storeAs($folder->path, $name, 'files');
         }
 
         return response()->json([

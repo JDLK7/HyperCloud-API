@@ -10,6 +10,7 @@ use App\Events\FileCreated;
 use Illuminate\Http\Request;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 abstract class FileController extends Controller
 {   
@@ -48,7 +49,7 @@ abstract class FileController extends Controller
                 $zip->folder($folderName);
             }
             try {
-                $zip->add(base_path($p));
+                $zip->add(Storage::disk('files')->path($p));
             }
             catch(InvalidArgumentException $ex) {}
         }
@@ -87,7 +88,7 @@ abstract class FileController extends Controller
 
             if($file->type !== 'folder') {
                 return response()->download(
-                    base_path($file->path), 
+                    Storage::disk('files')->path($file->path),
                     $file->name, 
                     ['X-FileName' => $file->name]
                 );
