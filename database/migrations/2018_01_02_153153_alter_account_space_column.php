@@ -14,7 +14,7 @@ class AlterAccountSpaceColumn extends Migration
     public function up()
     {
         Schema::table('accounts', function (Blueprint $table) {
-            $table->integer('space')->unsigned()->nullable()->change();
+            $table->integer('space')->unsigned()->default(0)->change();
         });
     }
 

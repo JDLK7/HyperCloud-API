@@ -10,6 +10,7 @@ use App\Account;
 use JWTAuth;
 use Validator;
 use Illuminate\Mail\Message;
+use App\Services\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -18,6 +19,17 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
+    /**
+     * Undocumented variable
+     *
+     * @var \App\Services\UserService
+     */
+    protected $userService;
+
+    public function __construct() {
+        $this->userService = new UserService();
+    }
+
     /**
      * API Register
      *
@@ -30,6 +42,7 @@ class AuthController extends Controller
             'email' => 'required|email|max:255|unique:users',
             'userName' => 'required|max:255|regex:/^[\d\w\_\-\.]+$/',
             'password' => 'required|confirmed|min:6',
+            'suscription' => 'required|exists:suscriptions,id',
         ];
 
         $input = $request->only(
@@ -37,7 +50,8 @@ class AuthController extends Controller
             'email',
             'userName',
             'password',
-            'password_confirmation'
+            'password_confirmation',
+            'suscription'
         );
 
         $validator = Validator::make($input, $rules);
@@ -50,17 +64,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $name = $request->name;
-        $email = $request->email;
-        $password = $request->password;
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => bcrypt($password)
-        ]);
-        
-        $userName = $request->userName;
-        $user->account()->create(['userName' => $userName]);
+        $user = $this->userService->createUser($input);
 
         $verificationCode = str_random(30); //Generate verification code
         DB::table('user_verifications')->insert([
@@ -70,10 +74,11 @@ class AuthController extends Controller
         
         $appName = env('APP_NAME', 'HyperCloud');
         $subject = "Por favor, verifique su cuenta de $appName.";
-        Mail::send('email.verification', ['name' => $name, 'verificationCode' => $verificationCode],
-            function($mail) use ($email, $name, $subject, $appName) {
+
+        Mail::send('email.verification', ['name' => $user->name, 'verificationCode' => $verificationCode],
+            function($mail) use ($user, $subject, $appName) {
                 $mail->from(env('MAIL_FROM_ADDRESS'), $appName);
-                $mail->to($email, $name);
+                $mail->to($user->email, $user->name);
                 $mail->subject($subject);
             });
 
