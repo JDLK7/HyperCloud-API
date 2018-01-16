@@ -6,6 +6,7 @@ use App\User;
 use App\File;
 use App\Group;
 use App\Folder;
+use App\Events\FileCreated;
 use Illuminate\Http\Request;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
@@ -54,6 +55,16 @@ abstract class FileController extends Controller
         $zip->close();
 
         return $zipPath; 
+    }
+
+    /**
+     * Lanza el evento de creación de un fichero.
+     *
+     * @param \App\File $file
+     * @return void
+     */
+    protected function dispatchFileCreatedEvent($file) {
+        event(new FileCreated($file));
     }
 
     public function __construct() {

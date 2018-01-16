@@ -75,6 +75,8 @@ class FileGroupController extends FileController
         $newFolder->group()->associate($group);
         $newFolder->save();
 
+        $this->dispatchFileCreatedEvent($newFolder);
+
         return response()->json([
             'success' => true,
             'message' => 'Carpeta creada correctamente',
@@ -117,6 +119,8 @@ class FileGroupController extends FileController
 
             $newArchive->group()->associate($user->account);
             $newArchive->save();
+
+            $this->dispatchFileCreatedEvent($newArchive);
 
             $file->move(base_path($folder->path), $name);
         }
