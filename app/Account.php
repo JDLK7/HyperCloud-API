@@ -3,12 +3,11 @@
 namespace App;
 
 use App\Traits\Uuids;
-use App\Traits\CreatesFolder;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    use Uuids, CreatesFolder;
+    use Uuids;
     
     protected static function boot() {
         
@@ -20,7 +19,7 @@ class Account extends Model
         static::created(function ($account) {
             $usersFolder = Folder::where('path', 'users/')->first();
 
-            $accountFolder = Folder::create([
+            $accountFolder = new Folder([
                 'name' => $account->userName, 
                 'path' => $account->path, 
                 'size' => 4096

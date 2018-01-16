@@ -3,12 +3,32 @@
 namespace App;
 
 use App\Traits\Uuids;
-use App\Traits\CreatesFolder;
 use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    use Uuids, CreatesFolder;
+    use Uuids;
+
+    protected static function boot() {
+        
+        parent::boot();
+
+        /**
+         * Crea la carpeta del usuario y se la asocia.
+         */
+        static::created(function ($group) {
+            $groupsFolder = Folder::where('path', 'groups/')->first();
+
+            $groupFolder = new Folder([
+                'name' => $group->name, 
+                'path' => $group->path, 
+                'size' => 4096
+            ]);
+            $groupFolder->folder()->associate($groupsFolder);
+            $groupFolder->group()->associate($group);
+            $groupFolder->save();
+        });
+    }
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -51,6 +71,15 @@ class Group extends Model
      */
     public function folders() {
        return $this->hasMany('App\Folder');
+    }
+
+    /**
+     * Accessor que devuelve la ruta del directorio raíz del grupo.
+     *
+     * @return string
+     */
+    public function getPathAttribute() {
+        return "groups/$this->name/";
     }
 
     /**
