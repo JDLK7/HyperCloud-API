@@ -95,6 +95,8 @@ class FileUserController extends FileController
         $newFolder->account()->associate($user->account);
         $newFolder->save();
 
+        $this->dispatchFileCreatedEvent($newFolder);
+
         return response()->json([
             'success' => true,
             'message' => 'Carpeta creada correctamente',
@@ -137,6 +139,8 @@ class FileUserController extends FileController
 
             $newArchive->account()->associate($user->account);
             $newArchive->save();
+
+            $this->dispatchFileCreatedEvent($newArchive);
 
             $file->move(base_path($folder->path), $name);
         }
