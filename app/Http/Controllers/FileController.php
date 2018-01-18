@@ -112,4 +112,25 @@ abstract class FileController extends Controller
             'message' => 'No se ha podido generar el fichero zip',
         ]);
     }
+
+    /**
+     * Borra los archivos tanto físicamente como de la BD.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request) {
+        $files = $request->get('files');
+
+        foreach($files as $id) {
+            $file = File::find($id);
+
+            $file->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ficheros borrados correctamente',
+        ]);
+    }
 }

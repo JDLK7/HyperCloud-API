@@ -3,13 +3,14 @@
 namespace App;
 
 use App\Traits\Uuids;
+use App\Traits\DeletesFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
 class File extends Model
 {
-    use Uuids, SingleTableInheritanceTrait;
+    use Uuids, DeletesFile, SingleTableInheritanceTrait;
 
     /**
      * Nombre de la que contiene el mapeado del modelo.
