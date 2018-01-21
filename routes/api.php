@@ -27,6 +27,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('logout', 'LoginController@logout');
     
     Route::get('users/{user}/files', 'FileUserController@index');
+    Route::put('users/{user}', 'UserController@update');
 
     Route::group(['middleware' => ['user.ownership']], function () {
         Route::get('users/{user}/folders/{folder}', 'FileUserController@show');
