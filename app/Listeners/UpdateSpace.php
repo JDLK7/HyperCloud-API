@@ -2,12 +2,22 @@
 
 namespace App\Listeners;
 
-use App\Events\FileCreated;
+use App\Events\FileEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class UpdateSpace
 {
+    /**
+     * Comprueba si el evento es de creación o de borrado.
+     *
+     * @param FileEvent $event
+     * @return boolean
+     */
+    private function isCreateEvent($event) {
+        return $event instanceof \App\Events\FileCreated;
+    }
+
     /**
      * Suma el espacio dado al espacio usado por la cuenta de un usuario. 
      *
@@ -36,21 +46,25 @@ class UpdateSpace
      * @param  FileCreated  $event
      * @return void
      */
-    public function handle(FileCreated $event)
+    public function handle(FileEvent $event)
     {
         $file = $event->file;
+
+        $space = $this->isCreateEvent($event)
+            ? $file->size
+            : $file->size * (-1);
         
         if($file->account()->exists()) {
             $account = $file->account;
 
-            $this->updateSpaceUsed($account, $file->size);
+            $this->updateSpaceUsed($account, $space);
         }
         else if($file->group()->exists()) {
             $accounts = $file->group->accounts;
-            $size = ($file->size / $accounts->count());
+            $spacePerAccount = ($space / $accounts->count());
 
             foreach($accounts as $account) {
-                $this->updateSpaceUsed($account, $size);
+                $this->updateSpaceUsed($account, $spacePerAccount);
             }
         }
     }

@@ -7,6 +7,7 @@ use App\File;
 use App\Group;
 use App\Folder;
 use App\Events\FileCreated;
+use App\Events\FileDeleted;
 use Illuminate\Http\Request;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,16 @@ abstract class FileController extends Controller
         event(new FileCreated($file));
     }
 
+    /**
+     * Lanza el evento de borrado  de un fichero.
+     *
+     * @param \App\File $file
+     * @return void
+     */
+    protected function dispatchFileDeletedEvent($file) {
+        event(new FileDeleted($file));
+    }
+
     public function __construct() {
         $this->fileService = new FileService();
     }
@@ -125,6 +136,8 @@ abstract class FileController extends Controller
         foreach($files as $id) {
             $file = File::find($id);
 
+            $this->dispatchFileDeletedEvent($file);
+            
             $file->delete();
         }
 
