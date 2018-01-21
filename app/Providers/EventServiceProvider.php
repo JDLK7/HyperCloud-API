@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\FileCreated' => [
             'App\Listeners\UpdateSpace',
         ],
+        'App\Events\FileDeleted' => [
+            'App\Listeners\UpdateSpace',
+        ],
     ];
 
     /**

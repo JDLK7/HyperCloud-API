@@ -36,6 +36,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     });
 
     Route::group(['middleware' => ['user.many.ownership']], function () {
+        Route::delete('users/{user}/files', 'FileUserController@delete');
         Route::post('users/{user}/files/download', 'FileUserController@download');
     });
     
@@ -49,6 +50,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         });
         
         Route::group(['middleware' => ['group.many.ownership']], function () {
+            Route::delete('groups/{group}/files', 'FileGroupController@delete');
             Route::post('groups/{group}/files/download', 'FileGroupController@download');
         });
     });
