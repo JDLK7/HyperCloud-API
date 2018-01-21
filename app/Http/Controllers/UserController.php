@@ -10,10 +10,25 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Datos editables del modelo User.
+     *
+     * @var array
+     */
     protected $userEditables = ['name', 'email', 'password'];
 
+    /**
+     * Datos editables del modelo Account.
+     *
+     * @var array
+     */
     protected $accountEditables = ['userName', 'suscription_id'];
 
+    /**
+     * Reglas de validación.
+     *
+     * @var array
+     */
     protected $rules = [
         'name' => 'nullable|max:255',
         'email' => 'nullable|email|max:255|unique:users',
@@ -23,10 +38,22 @@ class UserController extends Controller
         'suscription_id' => 'nullable|exists:suscriptions,id',
     ];
 
+    /**
+     * Devuelve los datos editables del modelo User.
+     *
+     * @param array $data
+     * @return array
+     */
     protected function userData($data) {
         return array_only($data, $this->userEditables);
     }
 
+    /**
+     * Devuelve los datos editables del modelo Account asociado a User.
+     *
+     * @param array $data
+     * @return array
+     */
     protected function accountData($data) {
         return array_only($data, $this->accountEditables);
     }
