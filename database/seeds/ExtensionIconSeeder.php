@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\DB;
 class ExtensionIconSeeder extends Seeder
 {
     protected $icons = [
-        'video'     =>  ['avi', 'mkv', 'wmv', 'mp4', 'flv', '3gp'],
-        'document'  =>  ['doc', 'docx', 'txt', 'csv', 'odt', 'xlsx'],
-        'image'     =>  ['jpg', 'jpeg', 'gif', 'bmp', 'png', 'svg', 'psd'],
-        'pdf'       =>  ['pdf', 'PDF'],
-        'compress'  =>  ['zip', 'tar', 'tar.gz', 'rar'],
-        'code'      =>  ['cc', 'cpp', 'py', 'cs', 'php', 'html', 'css', 'java'],
+        'file-video-o'      =>  ['avi', 'mkv', 'wmv', 'mp4', 'flv', '3gp'],
+        'file-text-o'       =>  ['doc', 'docx', 'txt', 'csv', 'odt', 'xlsx'],
+        'file-image-o'      =>  ['jpg', 'jpeg', 'gif', 'bmp', 'png', 'svg', 'psd'],
+        'file-pdf-o'        =>  ['pdf', 'PDF'],
+        'file-archive-o'    =>  ['zip', 'tar', 'tar.gz', 'rar'],
+        'file-code-o'       =>  ['cc', 'cpp', 'py', 'cs', 'php', 'html', 'css', 'java'],
     ];
 
     /**
