@@ -97,6 +97,7 @@ class FileUserController extends FileController
         $newFolder->save();
 
         $this->dispatchFileCreatedEvent($newFolder);
+        $this->sendFileNotification($newFolder, 'creation');
 
         return response()->json([
             'success' => true,
@@ -142,6 +143,7 @@ class FileUserController extends FileController
             $newArchive->save();
 
             $this->dispatchFileCreatedEvent($newArchive);
+            $this->sendFileNotification($newArchive, 'creation');
 
             $file->storeAs($folder->path, $name, 'files');
         }

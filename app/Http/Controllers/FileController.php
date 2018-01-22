@@ -10,6 +10,7 @@ use App\Events\FileCreated;
 use App\Events\FileDeleted;
 use Illuminate\Http\Request;
 use App\Services\FileService;
+use App\Notifications\FileChange;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -79,6 +80,23 @@ abstract class FileController extends Controller
         event(new FileDeleted($file));
     }
 
+    /**
+     * Envía las notificaciones de archivo creado.
+     *
+     * @param \App\File $file
+     * @return void
+     */
+    protected function sendFileNotification($file, $action) {
+        if(is_null($file->group)) {
+            $file->account->user->notify(new FileChange($file, $action));
+        }
+        else {
+            foreach($file->group->accounts as $account) {
+                $account->user->notify(new FileChange($file, $action));
+            }
+        }
+    }
+
     public function __construct() {
         $this->fileService = new FileService();
     }
@@ -137,6 +155,8 @@ abstract class FileController extends Controller
             $file = File::find($id);
 
             $this->dispatchFileDeletedEvent($file);
+
+            $this->sendFileNotification($file, 'deletion');
             
             $file->delete();
         }
