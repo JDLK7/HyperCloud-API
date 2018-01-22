@@ -25,7 +25,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/user/notifications', 'UserController@notifications');
+    Route::get('/user/notifications', 'NotificationController@index');
+    Route::patch('/user/notifications/{notification}', 'NotificationController@update');
     
     Route::get('users/{user}/files', 'FileUserController@index');
     // Route::get('users/{user}', 'UserController@show');

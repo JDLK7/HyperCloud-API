@@ -4,13 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\Folder;
-
 use Illuminate\Http\Request;
 use App\Services\FileServiceException;
+use App\Notifications\GroupFileChange;
 use Illuminate\Support\Facades\Storage;
 
 class FileGroupController extends FileController
 {
+    /**
+     * Envía una notificación a todas las cuentas 
+     * del grupo con los cambios en el fichero.
+     *
+     * @param \App\File $file
+     * @param string $action
+     * @return void
+     */
+    protected function sendFileNotification($file, $action) {
+        if( !is_null($file->group)) {
+            foreach($file->group->accounts as $account) {
+                $account->user->notify(new GroupFileChange($file, $action));
+            }
+        }
+    }
+
     /**
      * Devuelve un listado paginado con los ficheros 
      * pertenecientes al grupo.
