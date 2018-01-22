@@ -79,6 +79,15 @@ abstract class FileController extends Controller
         event(new FileDeleted($file));
     }
 
+    /**
+     * Envía notificaciones con cambios en ficheros.
+     *
+     * @param \App\File $file
+     * @param string $action
+     * @return void
+     */
+    protected abstract function sendFileNotification($file, $action);
+
     public function __construct() {
         $this->fileService = new FileService();
     }
@@ -137,6 +146,8 @@ abstract class FileController extends Controller
             $file = File::find($id);
 
             $this->dispatchFileDeletedEvent($file);
+
+            $this->sendFileNotification($file, 'deletion');
             
             $file->delete();
         }

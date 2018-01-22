@@ -6,11 +6,25 @@ use App\User;
 use App\Folder;
 use App\Archive;
 use Illuminate\Http\Request;
+use App\Notifications\UserFileChange;
 use App\Services\FileServiceException;
 use Illuminate\Support\Facades\Storage;
 
 class FileUserController extends FileController
 {
+    /**
+     * Envía una notificación al usuario con los cambios del fichero.
+     * 
+     * @param \App\File $file
+     * @param string $action
+     * @return void
+     */
+    protected function sendFileNotification($file, $action) {
+        if( !is_null($file->account)) {
+            $file->account->user->notify(new UserFileChange($file, $action));
+        }
+    }
+
     /**
      * Devuelve un listado paginado con los ficheros 
      * pertenecientes al usuario.
@@ -97,6 +111,7 @@ class FileUserController extends FileController
         $newFolder->save();
 
         $this->dispatchFileCreatedEvent($newFolder);
+        $this->sendFileNotification($newFolder, 'creation');
 
         return response()->json([
             'success' => true,
@@ -142,6 +157,7 @@ class FileUserController extends FileController
             $newArchive->save();
 
             $this->dispatchFileCreatedEvent($newArchive);
+            $this->sendFileNotification($newArchive, 'creation');
 
             $file->storeAs($folder->path, $name, 'files');
         }
