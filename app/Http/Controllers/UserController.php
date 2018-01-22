@@ -108,4 +108,21 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+
+    /**
+     * Lista las notificaciones sin leer.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function notifications(Request $request) {
+        $user = $request->user();
+
+        $notifications = $user->unreadNotifications;
+
+        return response()->json([
+            'success' => true,
+            'notifications' => $notifications,
+        ]);
+    }
 }

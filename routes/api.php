@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('login', 'LoginController@login');
 Route::post('register', 'RegisterController@register');
 
@@ -25,8 +21,14 @@ Route::get('suscriptions', 'SuscriptionController@index');
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::get('logout', 'LoginController@logout');
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/user/notifications', 'UserController@notifications');
     
     Route::get('users/{user}/files', 'FileUserController@index');
+    // Route::get('users/{user}', 'UserController@show');
     Route::put('users/{user}', 'UserController@update');
 
     Route::group(['middleware' => ['user.ownership']], function () {
