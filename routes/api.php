@@ -18,6 +18,9 @@ Route::post('register', 'RegisterController@register');
 
 Route::get('suscriptions', 'SuscriptionController@index');
 
+Route::get('/files/{shareableLink}', 'SharedFileController@index')
+    ->where('shareableLink', '[A-Za-z0-9]+');;
+
 Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::get('logout', 'LoginController@logout');
@@ -45,6 +48,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::group(['middleware' => ['user.many.ownership']], function () {
         Route::delete('users/{user}/files', 'FileUserController@delete');
         Route::post('users/{user}/files/download', 'FileUserController@download');
+        Route::post('users/{user}/files/share', 'FileUserController@share');
     });
     
     Route::group(['middleware' => ['group.membership']], function () {
