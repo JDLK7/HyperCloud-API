@@ -23,7 +23,10 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('logout', 'LoginController@logout');
 
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return response()->json([
+            'success' => true,
+            'user'    => \App\User::find(Auth::id())->with('account')->first(),
+        ]);
     });
     Route::get('/user/notifications', 'NotificationController@index');
     Route::patch('/user/notifications/{notification}', 'NotificationController@update');

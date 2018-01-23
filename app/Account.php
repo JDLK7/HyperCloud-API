@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Uuids;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
@@ -27,6 +28,26 @@ class Account extends Model
             $accountFolder->folder()->associate($usersFolder);
             $accountFolder->account()->associate($account);
             $accountFolder->save();
+        });
+
+        /**
+         * Si se cambia el nombre de usuario renombra 
+         * todos los ficheros asociados a la cuenta.
+         */
+        static::updating(function ($account) {
+            $oldUserName = $account->getOriginal('userName');
+
+            if(is_null($account->folder())) {
+                File::where('path', 'like', "%{$oldUserName}%")
+                    ->update([
+                        'path' => DB::raw("REPLACE(path, 'users/{$oldUserName}/', 'users/{$account->userName}/')")
+                    ]);
+                
+                File::where('path', $account->path)
+                    ->update([
+                    'name' => $account->userName
+                ]);
+            }
         });
     }
     
