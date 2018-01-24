@@ -56,6 +56,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::group(['middleware' => ['user.admin']], function () {
         Route::get('/users', 'UserController@index');
         Route::get('/metrics', 'StatisticsController@metrics');
+        Route::delete('/users/{user}', 'UserController@destroy');
         Route::patch('/users/{user}/grant-admin-privileges', 'UserController@grantAdminPrivileges');
     });
     

@@ -125,6 +125,21 @@ class UserController extends Controller
     }
 
     /**
+     * Borra un usuario y toda su información asociada.
+     *
+     * @param \App\User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(User $user) {
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario borrado correctamente',
+        ], 204);
+    }
+
+    /**
      * Concede permisos de administrador al usuario.
      *
      * @param \App\User $user
