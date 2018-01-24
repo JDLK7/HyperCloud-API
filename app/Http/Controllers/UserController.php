@@ -108,4 +108,19 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+
+    /**
+     * Devuelve un listado paginado con todos 
+     * los usuarios de la plataforma.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request) {
+        $users = User::with('account')->paginate(10);
+
+        return response()->json([
+            'users' => $users,
+        ]);
+    }
 }
