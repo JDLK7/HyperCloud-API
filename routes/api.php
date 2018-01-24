@@ -19,7 +19,9 @@ Route::post('register', 'RegisterController@register');
 Route::get('suscriptions', 'SuscriptionController@index');
 
 Route::get('/files/{shareableLink}', 'SharedFileController@index')
-    ->where('shareableLink', '[A-Za-z0-9]+');;
+    ->where('shareableLink', '[A-Za-z0-9]+');
+
+Route::post('/files/{shareableLink}/download', 'SharedFileController@download');
 
 Route::group(['middleware' => ['jwt.auth']], function () {
 
