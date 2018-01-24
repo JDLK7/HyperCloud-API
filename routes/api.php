@@ -55,6 +55,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::group(['middleware' => ['user.admin']], function () {
         Route::get('/users', 'UserController@index');
+        Route::get('/metrics', 'StatisticsController@metrics');
     });
     
     Route::group(['middleware' => ['group.membership']], function () {
