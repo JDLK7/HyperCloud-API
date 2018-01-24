@@ -31,11 +31,12 @@ abstract class FileController extends Controller
      * @return string
      */
     protected function createZipFile($pathArray) {
-        $user = Auth::user();
         $zip = new \Chumper\Zipper\Zipper;
+
+        $payload = str_random(10);
+
         $zipPath = public_path(
-            hash('crc32', $user->email.time()).
-            '.zip'
+            "$payload.zip"
         );
         $zip->make($zipPath);
         foreach($pathArray as $p) {

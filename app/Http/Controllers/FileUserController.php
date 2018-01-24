@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\File;
 use App\Folder;
 use App\Archive;
 use Illuminate\Http\Request;
@@ -166,6 +167,33 @@ class FileUserController extends FileController
             'success' => true,
             'message' => 'Archivo/s subido correctamente',
             'archive' => $newArchive,
+        ]);
+    }
+
+    /**
+     * Comparte públicamente los ficheros y devuelve
+     * un enlace único para acceder a ellos.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function share(Request $request, User $user) {
+        $this->validate($request, [
+            'files' => 'required|array'
+        ]);
+
+        $files = $request->get('files');
+
+        $shareableLink = str_random(40);
+
+        File::whereIn('id', $files)->update([
+            'shareable_link' => $shareableLink,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'shareable_link' => $shareableLink,
         ]);
     }
 }
