@@ -123,4 +123,20 @@ class UserController extends Controller
             'users' => $users,
         ]);
     }
+
+    /**
+     * Concede permisos de administrador al usuario.
+     *
+     * @param \App\User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function grantAdminPrivileges(User $user) {
+        $user->is_admin = true;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Permisos de administrador concedidos',
+        ]);
+    }
 }
