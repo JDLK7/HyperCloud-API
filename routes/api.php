@@ -30,7 +30,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('/user', function (Request $request) {
         return response()->json([
             'success' => true,
-            'user'    => \App\User::find(Auth::id())->with('account')->first(),
+            'user'    => \App\User::where('id', Auth::id())
+                ->with('account')->first(),
         ]);
     });
     Route::get('/user/notifications', 'NotificationController@index');

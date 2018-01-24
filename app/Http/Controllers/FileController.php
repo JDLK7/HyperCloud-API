@@ -124,7 +124,10 @@ abstract class FileController extends Controller
             return response()->download(
                 $zipPath,
                 $zipName,
-                ['X-FileName' => $zipName]
+                [
+                    'X-FileName' => $zipName,
+                    'Access-Control-Expose-Headers' => 'X-FileName',
+                ]
             )->deleteFileAfterSend(true);
         }
         
