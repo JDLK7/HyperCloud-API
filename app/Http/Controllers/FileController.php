@@ -111,7 +111,10 @@ abstract class FileController extends Controller
                 return response()->download(
                     Storage::disk('files')->path($file->path),
                     $file->name, 
-                    ['X-FileName' => $file->name]
+                    [
+                        'X-FileName' => $file->name,
+                        'Access-Control-Expose-Headers' => 'X-FileName',
+                    ]
                 );
             }
         }
