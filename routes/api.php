@@ -41,6 +41,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::put('users/{user}', 'UserController@update');
 
     Route::group(['middleware' => ['user.ownership']], function () {
+        Route::patch('users/{user}/files/{file}', 'FileUserController@update');
         Route::get('users/{user}/folders/{folder}', 'FileUserController@show');
         Route::get('users/{user}/folders/{folder}/folders', 'FileUserController@listFolders');
         Route::post('users/{user}/folders/{folder}/folders', 'FileUserController@createFolder');

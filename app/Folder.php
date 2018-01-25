@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\CreatesFolder;
+use Illuminate\Support\Facades\DB;
 
 class Folder extends File
 {
@@ -43,5 +44,22 @@ class Folder extends File
      */
     public function archives() {
         return $this->hasMany('App\Archive');
+    }
+
+    /**
+     * Renombra la carpeta y cambia el path de todos los ficheros descendientes.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function rename($name) {
+        $newPath = str_replace_last($this->name, $name, $this->path);
+
+        DB::table('files')->where('path', 'like', "{$this->path}%")
+            ->update([
+                'path' => DB::raw("REPLACE(path, '{$this->path}', '{$newPath}')")
+            ]);
+
+        return parent::rename($name);
     }
 }
