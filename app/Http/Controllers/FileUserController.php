@@ -34,7 +34,10 @@ class FileUserController extends FileController
      * @return \Illuminate\Http\Response
      */
     public function index(User $user) {
-        $files = $user->account->files()->paginate(10);
+        $files = $user->account->files()
+            ->orderBy('type', 'desc')
+            ->orderBy('name')
+            ->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -53,6 +56,8 @@ class FileUserController extends FileController
     public function show(User $user, Folder $folder) {
         $files = $folder->files()
             ->where('account_id', $user->account->id)
+            ->orderBy('type', 'desc')
+            ->orderBy('name')
             ->paginate(10);
 
         return response()->json([
@@ -72,6 +77,7 @@ class FileUserController extends FileController
     public function listFolders(User $user, Folder $folder) {
         $folders = $folder->folders()
             ->where('account_id', $user->account->id)
+            ->orderBy('name')
             ->get();
 
         return response()->json([

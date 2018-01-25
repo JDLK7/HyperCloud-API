@@ -117,7 +117,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request) {
-        $users = User::with('account')->paginate(10);
+        $users = User::with('account')->orderBy('userName')->paginate(10);
 
         return response()->json([
             'users' => $users,

@@ -30,7 +30,7 @@ class SuscriptionController extends Controller
     {
         return response()->json([
             'success' => true,
-            'suscriptions' => Suscription::all(),
+            'suscriptions' => Suscription::orderBy('price')->get(),
         ]);
     }
 

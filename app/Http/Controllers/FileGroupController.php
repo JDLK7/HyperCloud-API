@@ -35,7 +35,10 @@ class FileGroupController extends FileController
      * @return Illuminate\Http\Response
      */
     public function index(Group $group) {
-        $files = $group->files()->paginate(10);
+        $files = $group->files()
+            ->orderBy('type', 'desc')
+            ->orderBy('name')
+            ->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -54,6 +57,8 @@ class FileGroupController extends FileController
     public function show(Group $group, Folder $folder) {
         $files = $folder->files()
             ->where('group_id', $group->id)
+            ->orderBy('type', 'desc')
+            ->orderBy('name')
             ->paginate(10);
 
         return response()->json([
