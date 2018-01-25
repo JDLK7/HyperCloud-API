@@ -37,7 +37,7 @@ class FileUserController extends FileController
         $files = $user->account->files()
             ->orderBy('type', 'desc')
             ->orderBy('name')
-            ->paginate(10);
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -58,7 +58,7 @@ class FileUserController extends FileController
             ->where('account_id', $user->account->id)
             ->orderBy('type', 'desc')
             ->orderBy('name')
-            ->paginate(10);
+            ->get();
 
         return response()->json([
             'success' => true,

@@ -38,7 +38,7 @@ class FileGroupController extends FileController
         $files = $group->files()
             ->orderBy('type', 'desc')
             ->orderBy('name')
-            ->paginate(10);
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -59,7 +59,7 @@ class FileGroupController extends FileController
             ->where('group_id', $group->id)
             ->orderBy('type', 'desc')
             ->orderBy('name')
-            ->paginate(10);
+            ->get();
 
         return response()->json([
             'success' => true,
