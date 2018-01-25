@@ -15,13 +15,12 @@ class NotificationController extends Controller
     public function index(Request $request) {
         $user = $request->user();
 
-        $notifications = $user->unreadNotifications->groupBy('type');
+        $notifications = $user->unreadNotifications;
 
         return response()->json([
             'success'       => true,
             'notifications' => [
-                'user'  => $notifications->first(),
-                'group' => $notifications->last(),
+                'user'  => $notifications,
             ],
         ]);
     }
