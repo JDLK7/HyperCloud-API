@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use App\Suscription;
 use Illuminate\Http\Request;
+use App\Events\SuscriptionDeleted;
 
 class SuscriptionController extends Controller
 {
@@ -59,5 +60,22 @@ class SuscriptionController extends Controller
             'success' => true,
             'suscription' => $suscription,
         ], 201);
+    }
+
+    /**
+     * Borra una suscripción.
+     *
+     * @param \App\Suscription $suscription
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Suscription $suscription) {
+        $suscription->delete();
+
+        event(new SuscriptionDeleted());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario borrado correctamente',
+        ], 204);
     }
 }
