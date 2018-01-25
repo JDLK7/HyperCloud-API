@@ -67,6 +67,29 @@ class FileUserController extends FileController
     }
 
     /**
+     * Renombra un fichero.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\User $user
+     * @param \App\File $file
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, User $user, File $file) {
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+        ]);
+
+        $name = $request->get('name');
+
+        $success = $file->rename($name);
+
+        return response()->json([
+            'success'   => $success,
+            'file'      => $file,
+        ]);
+    }
+
+    /**
      * Devuelve un listado paginado con los ficheros
      * contenidos en la carpeta del usuario.
      *

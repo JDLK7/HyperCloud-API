@@ -5,6 +5,7 @@ namespace App;
 use App\Traits\Uuids;
 use App\Traits\DeletesFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
 
@@ -119,5 +120,25 @@ class File extends Model
         }
 
         return 'fa-question';
+    }
+
+     /**
+      * Renombra el archivo
+      *
+      * @param string $name
+      * @return boolean
+      */
+      public function rename($name) {
+        $name = $name.'.'.$this->extension;
+
+        $oldPath = $this->path;
+        $newPath = str_replace_last($this->name, $name, $this->path);
+
+        $this->name = $name;
+        $this->path = $newPath;
+
+        $isRenamed = Storage::disk('files')->move($oldPath, $newPath);
+        
+        return $this->save() && $isRenamed;
     }
 }
