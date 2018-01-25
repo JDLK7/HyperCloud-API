@@ -58,6 +58,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('/metrics', 'StatisticsController@metrics');
         Route::delete('/users/{user}', 'UserController@destroy');
         Route::patch('/users/{user}/grant-admin-privileges', 'UserController@grantAdminPrivileges');
+        Route::post('/suscriptions', 'SuscriptionController@create');
     });
     
     Route::group(['middleware' => ['group.membership']], function () {
