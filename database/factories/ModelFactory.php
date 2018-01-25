@@ -32,7 +32,7 @@ $factory->define(App\Account::class, function (Faker\Generator $faker) {
 
     return [
         'userName' => $userName,
-        'space' => $faker->numberBetween(0, 10),
+        'space' => 0,
         'user_id' => function() {
             return factory(App\User::class)->create()->id;
         }
@@ -78,10 +78,13 @@ $factory->define(App\Archive::class, function (Faker\Generator $faker) {
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Suscription::class, function (Faker\Generator $faker) {
+    $spaceOffer = $faker->numberBetween(10737418240, 1099511627776);
+    $price = intval($spaceOffer * 5E-11);
+
     return [
-        'name' => $faker->word,
-        'spaceOffer' => $faker->numberBetween(10737418240, 1099511627776),
-        'price' => $faker->numberBetween(3, 25),
+        'name' => ucfirst($faker->word),
+        'spaceOffer' => $spaceOffer,
+        'price' => $price,
         'description' => $faker->sentence,
     ];
 });
