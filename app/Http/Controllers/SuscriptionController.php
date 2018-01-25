@@ -75,7 +75,7 @@ class SuscriptionController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Usuario borrado correctamente',
-        ], 204);
+            'message' => 'Suscripción borrada correctamente',
+        ], 200);
     }
 }

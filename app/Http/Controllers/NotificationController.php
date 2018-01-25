@@ -42,6 +42,6 @@ class NotificationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Notificación marcada como leída',
-        ], 204);
+        ], 200);
     } 
 }

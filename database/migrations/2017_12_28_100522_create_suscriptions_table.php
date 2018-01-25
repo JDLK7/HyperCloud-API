@@ -18,7 +18,7 @@ class CreateSuscriptionsTable extends Migration
             $table->string('name');
             $table->integer('spaceOffer');
             $table->float('price');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
 
             $table->primary('id');
