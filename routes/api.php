@@ -38,7 +38,6 @@ Route::group(['middleware' => ['jwt.auth']], function () {
     Route::patch('/user/notifications/{notification}', 'NotificationController@update');
     
     Route::get('users/{user}/files', 'FileUserController@index');
-    // Route::get('users/{user}', 'UserController@show');
     Route::put('users/{user}', 'UserController@update');
 
     Route::group(['middleware' => ['user.ownership']], function () {
@@ -52,6 +51,15 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::delete('users/{user}/files', 'FileUserController@delete');
         Route::post('users/{user}/files/download', 'FileUserController@download');
         Route::post('users/{user}/files/share', 'FileUserController@share');
+    });
+
+    Route::group(['middleware' => ['user.admin']], function () {
+        Route::get('/users', 'UserController@index');
+        Route::get('/metrics', 'StatisticsController@metrics');
+        Route::delete('/users/{user}', 'UserController@destroy');
+        Route::patch('/users/{user}/grant-admin-privileges', 'UserController@grantAdminPrivileges');
+        Route::post('/suscriptions', 'SuscriptionController@create');
+        Route::delete('/suscriptions/{suscription}', 'SuscriptionController@destroy');
     });
     
     Route::group(['middleware' => ['group.membership']], function () {

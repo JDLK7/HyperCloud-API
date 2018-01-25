@@ -10,6 +10,13 @@ class Suscription extends Model
     use Uuids;
 
     /**
+     * Atributos asignables en masa.
+     *
+     * @var array
+     */
+    protected $fillable = ['name', 'description', 'price', 'spaceOffer'];
+
+    /**
      * Indicates if the IDs are auto-incrementing.
      *
      * @var bool

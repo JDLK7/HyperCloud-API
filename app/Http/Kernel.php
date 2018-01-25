@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'group.many.ownership' => \App\Http\Middleware\CheckIfGroupOwnsManyResources::class,
         'user.ownership' => \App\Http\Middleware\CheckIfUserOwnsResource::class,
         'user.many.ownership' => \App\Http\Middleware\CheckIfUserOwnsManyResources::class,
+        'user.admin' => \App\Http\Middleware\CheckAdminPrivileges::class,
     ];
 }
