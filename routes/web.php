@@ -16,5 +16,14 @@ Route::get('/', function () {
 });
 
 Route::get('user/verify/{verification_code}', 'RegisterController@verifyUser');
+
+/**
+ * Redirección para las llamadas que ocasionan 
+ * conflicto con el router de Angular;
+ */
+Route::get('{all}', function () {
+    return File::get(public_path('index.html'));
+})->where('all', '(.*)');
+
 Route::get('password/reset/{token?}', 'Auth\PasswordController@showResetForm');
 Route::post('password/reset', 'Auth\PasswordController@reset');
